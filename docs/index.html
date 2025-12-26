@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Tutoriel Projet Web Avancé</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0; padding: 0;
+  background: #f4f4f4;
+}
+header {
+  background: #6a5acd;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+header .logo {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 60px;
+}
+nav a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: bold;
+}
+section {
+  margin: 20px auto;
+  max-width: 900px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+h2 { color: #6a5acd; }
+pre {
+  background: #eee;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+footer {
+  text-align: center;
+  padding: 15px;
+  background: #6a5acd;
+  color: white;
+  margin-top: 30px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="assets/logo.png" alt="Logo" class="logo">
+  <h1>Tutoriel Projet Web Avancé – Gestion des Événements</h1>
+  <nav>
+    <a href="Tutoriel.pdf" download>Télécharger PDF</a>
+  </nav>
+</header>
+
+<main>
+
+<section id="introduction">
+  <h2>Introduction</h2>
+  <p>Ce tutoriel guide les étudiants pas à pas pour comprendre le développement d'une application web complète avec frontend HTML/CSS/JS et backend Node.js/Express.</p>
+</section>
+
+<section id="objectifs">
+  <h2>Objectifs pédagogiques</h2>
+  <ul>
+    <li>Comprendre l'architecture client-serveur 2 tiers</li>
+    <li>Manipuler le DOM et Fetch API</li>
+    <li>Créer et tester des routes Express</li>
+    <li>Documenter et présenter un projet web complet</li>
+  </ul>
+</section>
+
+<section id="frontend">
+  <h2>Frontend – HTML/CSS/JS</h2>
+  <p>Le frontend permet de :</p>
+  <ul>
+    <li>Afficher les événements</li>
+    <li>Ajouter de nouveaux événements via un formulaire</li>
+    <li>Communiquer avec le backend via Fetch API</li>
+  </ul>
+  <pre><code>
+// Exemple JS pour récupérer les événements
+fetch('/events')
+  .then(resp => resp.json())
+  .then(data => console.log(data));
+  </code></pre>
+</section>
+
+<section id="backend">
+  <h2>Backend – Node.js & Express</h2>
+  <p>Le backend est un serveur Express exposant des routes pour :</p>
+  <ul>
+    <li>GET /events → récupérer tous les événements</li>
+    <li>POST /events → ajouter un nouvel événement</li>
+  </ul>
+  <pre><code>
+// Exemple serveur Express
+const express = require('express');
+const app = express();
+app.use(express.json());
+app.use("/events", eventsRoutes);
+app.listen(3000, () => console.log('Serveur démarré'));
+  </code></pre>
+</section>
+
+<section id="conclusion">
+  <h2>Conclusion</h2>
+  <p>En suivant ce tutoriel, vous pouvez comprendre comment le frontend et le backend communiquent, manipuler le DOM, tester des routes avec Postman/Thunder Client et créer un site fonctionnel complet.</p>
+</section>
+
+</main>
+
+<footer>
+<p>© 2025 Module Développement Web Avancé</p>
+</footer>
+
+</body>
+</html>
