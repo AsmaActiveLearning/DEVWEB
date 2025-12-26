@@ -52,37 +52,41 @@ pre {
 }
 
 /* Code container avec bouton copier */
-.code-container {
+.code-box {
   position: relative;
-  background: #2d2d2d;
-  color: #f8f8f2;
-  padding: 15px;
-  border-radius: 8px;
+  background: #f5f5f5;  /* fond clair/gris */
+  padding: 15px 15px 15px 15px;
+  border-radius: 6px;
   margin-top: 10px;
   overflow-x: auto;
+  border: 1px solid #ddd;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  color: #333;
 }
 
-.code-container pre {
+.code-box pre {
   margin: 0;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 14px;
+  white-space: pre-wrap; /* pour que le texte s’adapte si trop long */
 }
 
 .copy-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #6a5acd;
+  background: #4CAF50;
   border: none;
   color: white;
   padding: 5px 10px;
-  border-radius: 5px;
+  font-size: 12px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .copy-btn:hover {
-  background: #5741a3;
+  background: #45a049;
 }
+
 
 footer {
   text-align: center;
