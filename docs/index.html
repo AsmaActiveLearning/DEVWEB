@@ -51,12 +51,44 @@ footer {
   color: white;
   margin-top: 30px;
 }
+  .code-container {
+  position: relative;
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.code-container pre {
+  margin: 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #6a5acd;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #5741a3;
+}
+
 </style>
 </head>
 <body>
 
 <header>
-  <img src="assets/logo.png" alt="Logo" class="logo">
+  <img src="logo.png" alt="Logo" class="logo">
   <h1>Tutoriel Projet Web Avancé – Gestion des Événements</h1>
   <nav>
     <a href="Tutoriel.pdf" download>Télécharger PDF</a>
@@ -112,6 +144,27 @@ app.use("/events", eventsRoutes);
 app.listen(3000, () => console.log('Serveur démarré'));
   </code></pre>
 </section>
+<section id="exemple-html">
+  <h2>Exemple HTML</h2>
+  <p>Voici un exemple de code HTML que vous pouvez copier facilement :</p>
+  
+  <div class="code-container">
+    <pre id="htmlCode">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Mon Exemple&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Bonjour le monde !&lt;/h1&gt;
+  &lt;p&gt>Ceci est un paragraphe.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </pre>
+    <button class="copy-btn" onclick="copyCode('htmlCode')">Copier le code</button>
+  </div>
+</section>
 
 <section id="conclusion">
   <h2>Conclusion</h2>
@@ -123,6 +176,13 @@ app.listen(3000, () => console.log('Serveur démarré'));
 <footer>
 <p>© 2025 Module Développement Web Avancé</p>
 </footer>
-
+<script>
+function copyCode(preId) {
+  const code = document.getElementById(preId).innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    alert('Code copié dans le presse-papier !');
+  });
+}
+</script>
 </body>
 </html>
