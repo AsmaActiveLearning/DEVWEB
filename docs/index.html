@@ -11,7 +11,11 @@
 
 <header>
   <img src="assets/logo.png" alt="Logo" class="logo">
-  <h1>Tutoriel Projet Web Avancé – Gestion des Événements</h1>
+  <h1>Tutoriel Projet Web Avancé : Building websites using HTML5, CSS3 and Javascript</h1>
+  <h1>TP1 : Gestion des Événements</h1>
+  
+  <p><strong>By :</strong> Asma BAGHDADI</p>
+  <p><strong>Posted on :</strong> December 26, 2025</p>
   <nav>
     <a href="Tutoriel.pdf" download>Télécharger PDF</a>
   </nav>
@@ -20,9 +24,18 @@
 <main>
 
 <section id="introduction">
-  <h2>Introduction</h2>
-  <p>Ce tutoriel guide les étudiants pas à pas pour comprendre le développement d'une application web complète avec frontend HTML/CSS/JS et backend Node.js/Express.</p>
-</section>
+  <h2>Description</h2>
+  <p>
+Ce TP consiste à réaliser une application web de gestion des événements.
+L’étudiant va concevoir une interface web en HTML et CSS permettant
+d’ajouter et d’afficher des événements, puis connecter cette interface
+à un backend simple en JavaScript afin de manipuler les données.
+Ce travail a pour objectif de comprendre la structure d’une page HTML,
+la séparation du contenu et du style, ainsi que les bases de l’interaction
+entre le frontend et le backend.
+</p>
+
+ </section>
 
 <section id="objectifs">
   <h2>Objectifs pédagogiques</h2>
@@ -35,24 +48,9 @@
 </section>
   
 <section id="tp1">
-  <h1>TP1 : Building websites using HTML5, CSS3 and Javascript</h1>
-  <h2>Premier TP</h2>
-  <p><strong>By :</strong> Mariem ZAOUALI</p>
-  <p><strong>Posted on :</strong> September 8, 2024</p>
-
-  <h3>TP : Création d’un site web avec HTML5, CSS3 et Javascript</h3>
-  <p>Dans ce TP, nous allons créer un site web en utilisant HTML5, CSS3 et Javascript. 
-  L’étudiant sera capable de :</p>
-  <ul>
-    <li>Créer un site web statique implémentant les différents types de balises HTML</li>
-    <li>Ajouter du style avec CSS (inline ou fichier externe)</li>
-    <li>Créer un lien de navigation entre les différentes pages du site</li>
-    <li>Stocker les données localement avec Javascript</li>
-  </ul>
-
   <h3>Outils à utiliser</h3>
   <ul>
-    <li><strong>Éditeur :</strong> Visual Studio Code. Après son installation, choisissez <em>Auto Save</em> dans le menu File pour assurer l’enregistrement automatique des changements au niveau du code.</li>
+    <li><strong>Éditeur :</strong> <p class="highlight">Visual Studio Code</p>. Après son installation, choisissez <em>Auto Save</em> dans le menu File pour assurer l’enregistrement automatique des changements au niveau du code.</li>
     <li><strong>Live Server :</strong> Installer le serveur à partir de Visual Studio Code</li>
     <li><strong>Navigateur :</strong> pour tester le site web</li>
   </ul>
@@ -67,6 +65,8 @@
     <li>Ajouter de nouveaux événements via un formulaire</li>
     <li>Communiquer avec le backend via Fetch API</li>
   </ul>
+  
+
   <pre><code>
 // Exemple JS pour récupérer les événements
 fetch('/events')
@@ -74,7 +74,34 @@ fetch('/events')
   .then(data => console.log(data));
   </code></pre>
 </section>
+<section id="exemple-html">
+  <h2>Exemple HTML</h2>
+  <p>Voici un exemple de code HTML que vous pouvez copier facilement :</p>
+  
+  <div class="code-container">
+    <pre id="htmlCode">
+<form id="eventForm" class="event-form">
+  <h2>Création d’un événement</h2>
 
+  <label for="title">Nom de l’événement</label>
+  <input type="text" id="title" name="title" placeholder="Ex : Conférence Web" required>
+
+  <label for="date">Date</label>
+  <input type="date" id="date" name="date" required>
+
+  <label for="location">Lieu</label>
+  <input type="text" id="location" name="location" placeholder="Ex : ENIT" required>
+
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" placeholder="Décrivez l’événement"></textarea>
+
+  <button type="submit">Ajouter l’événement</button>
+</form>
+
+    </pre>
+    <button class="copy-btn" onclick="copyCode('htmlCode')">Copier le code</button>
+  </div>
+</section>
 <section id="backend">
   <h2>Backend – Node.js & Express</h2>
   <p>Le backend est un serveur Express exposant des routes pour :</p>
@@ -90,27 +117,6 @@ app.use(express.json());
 app.use("/events", eventsRoutes);
 app.listen(3000, () => console.log('Serveur démarré'));
   </code></pre>
-</section>
-<section id="exemple-html">
-  <h2>Exemple HTML</h2>
-  <p>Voici un exemple de code HTML que vous pouvez copier facilement :</p>
-  
-  <div class="code-container">
-    <pre id="htmlCode">
-&lt;!DOCTYPE html&gt;
-&lt;html lang="fr"&gt;
-&lt;head&gt;
-  &lt;meta charset="UTF-8"&gt;
-  &lt;title&gt;Mon Exemple&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Bonjour le monde !&lt;/h1&gt;
-  &lt;p&gt>Ceci est un paragraphe.&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-    </pre>
-    <button class="copy-btn" onclick="copyCode('htmlCode')">Copier le code</button>
-  </div>
 </section>
 
 <section id="conclusion">
