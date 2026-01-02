@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TP Web 2 – Tailwind CSS vs CSS Classique</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* ======================== */
+/* Styles généraux TP futuriste */
+/* ======================== */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b,#111827);
+  color: #e5e7eb;
+  margin: 0;
+  top: 100px;
+  padding-top: 100px; /* espace sous header fixe */
+  padding-left: 240px; /* espace pour sidebar */
+  box-sizing: border-box;
+}
+
+/* Header fixe */
+header {
+  position: fixed;
+  top: 0;
+  left: 230px; /* à droite de sidebar */
+  width: calc(100% - 230px);
+  height: 100px; /* hauteur exacte du header */
+  z-index: 100; /* supérieur à sidebar et body */
+  background: #000;
+  backdrop-blur: blur(8px);
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+/* Sidebar fixe */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 100%;
+  background: rgba(15,23,42,0.95);
+  border-right: 1px solid #0ff;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 60;
+}
+
+#sidebar h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0ff;
+  margin-bottom: 12px;
+}
+
+#sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+#sidebar ul li {
+  margin-bottom: 8px;
+}
+
+#sidebar ul li a {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+#sidebar ul li a:hover {
+  color: #06b6d4;
+}
+
+/* Responsive */
+@media(max-width: 1024px){
+  #sidebar { display: none; }
+  body { margin-left: 0; padding-top: 100px; }
+  header { left: 0; width: 100%; }
+}
+
+/* Sections et questions */
+section {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 12px;
+  background: rgba(15,23,42,0.85);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+h2 { color: #0ff; font-weight: bold; margin-bottom: 12px; }
+
+.question {
+  display: flex;
+  align-items: center;
+  background: rgba(0,255,255,0.1);
+  padding: 12px;
+  border-left: 6px solid #0ff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.question span {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #0ff;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+pre {
+  background: #0f172a;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+button.copy-btn {
+  background: #0ff;
+  color: #111827;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+button.copy-btn:hover {
+  background: #06b6d4;
+}
+</style>
+
+<script>
+function copyCode(id){
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  alert("Code copié !");
+}
+function selectImage(src) {
+  document.getElementById("mainImage").src = src;
+}
+</script>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <h3>Navigation TP</h3>
+  <ul>
+    <li><a href="#prep">1. Préparation</a></li>
+    <li><a href="#css">2. Template CSS Classique</a></li>
+    <li><a href="#tailwind">3. Template TailWind</a></li>
+    <li><a href="#analyse">4. Analyse des classes</a></li>
+    <li><a href="#comparaison">5. Comparaison Tailwind / CSS</a></li>
+    <li><a href="#travail">6. Travail final</a></li>
+  </ul>
+</div>
+
+<!-- Header fixe -->
+<header class="flex justify-between items-center mb-6">
+  <!-- Titre + description -->
+  <div>
+    <h1 class="text-3xl font-extrabold text-cyan-400">
+      TP1 Web 2 – Tailwind CSS vs CSS Classique
+    </h1>
+    <p class="text-gray-400 mt-2">
+      Exploration, Analyse, Comparaison et Adaptation
+    </p>
+  </div>
+
+  <!-- Date publié à droite -->
+  <p class="text-yellow-300 italic font-futuristic text-right">
+    Publié <span class="font-bold">02/01/2026</span> par Asma BAGHDADI
+  </p>
+</header>
+
+<!-- ================================================= -->
+<section id="prep">
+<h3 class="text-cyan-400 text-xl font-bold mb-4">Préparation du projet Visual Studio Code</h3>
+<p>Avant de commencer :</p>
+<ul class="list-disc ml-6">
+<li>Installer <strong>Visual Studio Code</strong> et ouvrir un nouveau dossier projet.</li>
+<li>Installer les extensions : <strong>Live Server, Tailwind CSS IntelliSense, Prettier</strong>.</li>
+<li>Créer la structure de fichiers :</li>
+<pre>
+/tp-web2
+ ├── tailwind.html
+ ├── css.html
+ └── style.css
+</pre>
+<li>Ouvrir chaque fichier HTML avec <em>Live Server</em> pour visualiser les changements en temps réel.</li>
+</ul>
+</section>
+<section id='css' class="my-8 p-6 bg-gray-900 rounded-xl shadow-lg relative">
+  <h3 class="text-cyan-400 text-xl font-bold mb-4">Template CSS Classique – Code à copier</h3>
+
+  <!-- Bouton copier -->
+  <button 
+    class="absolute top-4 right-4 px-3 py-1 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition"
+    onclick="copyCode('cssClassiqueCode')">
+    Copier
+  </button>
+
+  <!-- Code à copier -->
+  <pre id="cssClassiqueCode" class="overflow-x-auto text-sm bg-gray-800 p-4 rounded-lg text-gray-200">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;CSS Classique – Advanced Documentation&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: #e5e7eb;
+      background: linear-gradient(to bottom right, #0f172a, #111827, #000000);
+      min-height: 100vh;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: #000000;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      color: #06b6d4;
+    }
+    nav h1 span { color: #ffffff; }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li {
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    nav ul li:hover { color: #06b6d4; }
+    nav button {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      border-radius: 0.5rem;
+      background-color: rgba(6,182,212,0.2);
+      color: #06b6d4;
+      border: 1px solid rgba(6,182,212,0.4);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    nav button:hover { background-color: rgba(6,182,212,0.4); }
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      padding: 5rem 1.5rem;
+      align-items: center;
+    }
+    @media(min-width: 768px) { .hero { grid-template-columns: 1fr 1fr; } }
+    .hero h2 { font-size: 2.25rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+    .hero h2 span { color: #06b6d4; }
+    .hero p { max-width: 450px; color: #9ca3af; margin-bottom: 1.5rem; }
+    .hero .buttons button { padding: 0.75rem 1.5rem; border-radius: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s ease; margin-right: 1rem; }
+    .hero .buttons .explorer { background-color: #06b6d4; color: black; }
+    .hero .buttons .explorer:hover { transform: scale(1.05); }
+    .hero .buttons .doc { background-color: transparent; border: 1px solid rgba(255,255,255,0.2); color: #e5e7eb; }
+    .hero .buttons .doc:hover { background-color: rgba(255,255,255,0.1); }
+    .hero img { width: 100%; border-radius: 1rem; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+    .utilitaires { max-width: 1280px; margin: 0 auto; padding: 4rem 1.5rem; }
+    .utilitaires h3 { font-size: 1.5rem; font-weight: 700; color: #06b6d4; margin-bottom: 2rem; }
+    .utilitaires .grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media(min-width: 640px) { .utilitaires .grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width: 1024px) { .utilitaires .grid { grid-template-columns: repeat(4,1fr); } }
+    .utilitaires .card { background-color: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; transition: background-color 0.3s ease; }
+    .utilitaires .card:hover { background-color: rgba(255,255,255,0.1); }
+    .galerie { max-width: 1280px; margin: 0 auto; padding: 4rem 1.5rem; }
+    .galerie h3 { font-size: 1.5rem; font-weight: 700; color: #06b6d4; margin-bottom: 1.5rem; }
+    .galerie #mainImage { width: 100%; height: 400px; object-fit: cover; border-radius: 1rem; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 2px solid rgba(6,182,212,0.3); transition: all 0.3s ease; margin-bottom: 2rem; }
+    .galerie .thumbnails { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+    @media(min-width: 640px) { .galerie .thumbnails { grid-template-columns: repeat(4,1fr); } }
+    .galerie .thumbnails img { border-radius: 0.5rem; cursor: pointer; opacity: 0.7; transition: all 0.3s ease; }
+    .galerie .thumbnails img:hover { opacity: 1; border: 2px solid #06b6d4; }
+    .avancee { max-width: 1280px; margin: 0 auto; padding: 4rem 1.5rem; }
+    .avancee h3 { font-size: 1.5rem; font-weight: 700; color: #06b6d4; margin-bottom: 1.5rem; }
+    .avancee .grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+    @media(min-width: 768px) { .avancee .grid { grid-template-columns: repeat(3,1fr); } }
+    .avancee .card { background-color: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; transition: all 0.3s ease; }
+    .avancee .glass { background: linear-gradient(to bottom right, rgba(6,182,212,0.2), rgba(59,130,246,0.1)); }
+    .avancee .hover-effect:hover { transform: rotate(1deg) scale(1.05); }
+    .avancee .ring-effect { border: 1px solid rgba(255,255,255,0.1); }
+    .avancee .ring-effect:hover { border-color: #06b6d4; }
+    footer { border-top: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; text-align: center; font-size: 0.875rem; color: #9ca3af; }
+  &lt;/style&gt;
+  &lt;script&gt;
+    function selectImage(src) { document.getElementById('mainImage').src = src; }
+    function copyCode(id) {
+      const code = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(code);
+      alert('Code copié dans le presse-papiers !');
+    }
+  &lt;/script&gt;
+  &lt;/head&gt;
+&lt;body&gt;
+
+  &lt;!-- NAVBAR --&gt;
+  &lt;nav&gt;
+    &lt;h1&gt;TAILWIND&lt;span&gt;DOC&lt;/span&gt;&lt;/h1&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Utilitaires&lt;/li&gt;
+      &lt;li&gt;Composants&lt;/li&gt;
+      &lt;li&gt;Galerie&lt;/li&gt;
+      &lt;li&gt;Responsive&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;button&gt;Get Started&lt;/button&gt;
+  &lt;/nav&gt;
+
+  &lt;!-- HERO --&gt;
+  &lt;section class=&quot;hero&quot;&gt;
+    &lt;div&gt;
+      &lt;h2&gt;Utility-First &lt;br&gt;&lt;span&gt;Design System&lt;/span&gt;&lt;/h2&gt;
+      &lt;p&gt;Cette page sert de documentation vivante pour explorer les classes utilitaires Tailwind à travers des composants concrets.&lt;/p&gt;
+      &lt;div class=&quot;buttons&quot;&gt;
+        &lt;button class=&quot;explorer&quot;&gt;Explorer&lt;/button&gt;
+        &lt;button class=&quot;doc&quot;&gt;Documentation&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;img src=&quot;https://picsum.photos/600/400&quot;&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- UTILITAIRES --&gt;
+  &lt;section class=&quot;utilitaires&quot;&gt;
+    &lt;h3&gt;Utilitaires clés&lt;/h3&gt;
+    &lt;div class=&quot;grid&quot;&gt;
+      &lt;div class=&quot;card&quot;&gt;&lt;h4&gt;Spacing&lt;/h4&gt;&lt;p&gt;p-6, m-4, gap-6, space-y-4&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;&lt;h4&gt;Typography&lt;/h4&gt;&lt;p&gt;text-xl, font-bold, tracking-wide&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;&lt;h4&gt;Effects&lt;/h4&gt;&lt;p&gt;hover, transition, transform, scale&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;card&quot;&gt;&lt;h4&gt;Layout&lt;/h4&gt;&lt;p&gt;flex, grid, justify-between&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- GALERIE --&gt;
+  &lt;section class=&quot;galerie&quot;&gt;
+    &lt;h3&gt;Galerie – Albums interactifs&lt;/h3&gt;
+    &lt;img id=&quot;mainImage&quot; src=&quot;https://picsum.photos/id/1011/900/500&quot;&gt;
+    &lt;div class=&quot;thumbnails&quot;&gt;
+      &lt;img onclick=&quot;selectImage(this.src)&quot; src=&quot;https://picsum.photos/id/1011/300/200&quot;&gt;
+      &lt;img onclick=&quot;selectImage(this.src)&quot; src=&quot;https://picsum.photos/id/1015/300/200&quot;&gt;
+      &lt;img onclick=&quot;selectImage(this.src)&quot; src=&quot;https://picsum.photos/id/1016/300/200&quot;&gt;
+      &lt;img onclick=&quot;selectImage(this.src)&quot; src=&quot;https://picsum.photos/id/1020/300/200&quot;&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- SECTION AVANCEE --&gt;
+  &lt;section class=&quot;avancee&quot;&gt;
+    &lt;h3&gt;Explorations avancées&lt;/h3&gt;
+    &lt;div class=&quot;grid&quot;&gt;
+      &lt;div class=&quot;card glass&quot;&gt;&lt;h4&gt;Glassmorphism&lt;/h4&gt;&lt;p&gt;Utilisation de backdrop-blur, opacity et gradients.&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;card hover-effect&quot;&gt;&lt;h4&gt;Micro-interactions&lt;/h4&gt;&lt;p&gt;Hover, transition, transform, duration.&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;card ring-effect&quot;&gt;&lt;h4&gt;Focus &amp; Accessibilité&lt;/h4&gt;&lt;p&gt;focus:ring, outline-none, aria-friendly.&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- FOOTER --&gt;
+  &lt;footer&gt;
+    CSS Classique – Advanced Web 2 Template
+  &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+  </pre>
+</section>
+<section id='tailwind' class="my-8 p-6 bg-gray-900 rounded-xl shadow-lg relative">
+  <h3 class="text-cyan-400 text-xl font-bold mb-4">Template Tailwind CSS – Code à copier</h3>
+
+  <!-- Bouton copier -->
+  <button 
+    class="absolute top-4 right-4 px-3 py-1 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition"
+    onclick="copyCode('tailwindFullCode')">
+    Copier
+  </button>
+<pre id="tailwindFullCode" class="overflow-x-auto text-sm bg-gray-800 p-4 rounded-lg text-gray-200">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;title&gt;Tailwind CSS – Advanced Documentation&lt;/title&gt;
+  &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+
+  &lt;script&gt;
+    function selectImage(src) {
+      document.getElementById("mainImage").src = src;
+    }
+  &lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body class="bg-gradient-to-br from-slate-900 via-gray-900 to-black text-gray-200 min-h-screen"&gt;
+
+&lt;!-- NAVBAR FUTURISTE --&gt;
+&lt;nav class="sticky top-0 z-50 bg-black border-b border-white/10"&gt;
+  &lt;div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"&gt;
+    &lt;h1 class="text-xl font-bold tracking-widest text-cyan-400"&gt;
+      TAILWIND&lt;span class="text-white"&gt;DOC&lt;/span&gt;
+    &lt;/h1&gt;
+    &lt;ul class="hidden md:flex space-x-8 text-sm"&gt;
+      &lt;li class="hover:text-cyan-400 transition"&gt;Utilitaires&lt;/li&gt;
+      &lt;li class="hover:text-cyan-400 transition"&gt;Composants&lt;/li&gt;
+      &lt;li class="hover:text-cyan-400 transition"&gt;Galerie&lt;/li&gt;
+      &lt;li class="hover:text-cyan-400 transition"&gt;Responsive&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;button class="px-4 py-2 text-sm rounded-lg bg-cyan-500 text-cyan-300 hover:bg-cyan-600 transition"&gt;
+      Get Started
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- HERO --&gt;
+&lt;section class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center"&gt;
+  &lt;div class="space-y-6"&gt;
+    &lt;h2 class="text-4xl font-extrabold leading-tight"&gt;
+      Utility-First &lt;br&gt;
+      &lt;span class="text-cyan-400"&gt;Design System&lt;/span&gt;
+    &lt;/h2&gt;
+    &lt;p class="text-gray-400 max-w-lg"&gt;
+      Cette page sert de documentation vivante pour explorer les classes utilitaires
+      Tailwind à travers des composants concrets.
+    &lt;/p&gt;
+    &lt;div class="flex gap-4"&gt;
+      &lt;button class="px-6 py-3 rounded-xl bg-cyan-500 text-black font-semibold hover:scale-105 transition transform"&gt;
+        Explorer
+      &lt;/button&gt;
+      &lt;button class="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition"&gt;
+        Documentation
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="relative"&gt;
+    &lt;div class="absolute inset-0 blur-3xl bg-cyan-500/20"&gt;&lt;/div&gt;
+    &lt;img src="https://picsum.photos/600/400" class="relative rounded-2xl shadow-2xl ring-1 ring-white/10"&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- UTILITAIRES --&gt;
+&lt;section class="max-w-7xl mx-auto px-6 py-16"&gt;
+  &lt;h3 class="text-2xl font-bold mb-8 text-cyan-400"&gt;Utilitaires clés&lt;/h3&gt;
+  &lt;div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"&gt;
+
+    &lt;div class="bg-white/5 p-6 rounded-xl hover:bg-white/10 transition"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Spacing&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;p-6, m-4, gap-6, space-y-4&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="bg-white/5 p-6 rounded-xl hover:bg-white/10 transition"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Typography&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;text-xl, font-bold, tracking-wide&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="bg-white/5 p-6 rounded-xl hover:bg-white/10 transition"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Effects&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;hover, transition, transform, scale&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="bg-white/5 p-6 rounded-xl hover:bg-white/10 transition"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Layout&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;flex, grid, justify-between&lt;/p&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- GALERIE --&gt;
+&lt;section class="max-w-7xl mx-auto px-6 py-16"&gt;
+  &lt;h3 class="text-2xl font-bold mb-6 text-cyan-400"&gt;Galerie – Albums interactifs&lt;/h3&gt;
+
+  &lt;div class="mb-8"&gt;
+    &lt;img id="mainImage" src="https://picsum.photos/id/1011/900/500"
+         class="w-full h-[400px] object-cover rounded-2xl shadow-xl ring-2 ring-cyan-500/30 transition"&gt;
+  &lt;/div&gt;
+
+  &lt;div class="grid grid-cols-2 sm:grid-cols-4 gap-4"&gt;
+    &lt;img onclick="selectImage(this.src)" src="https://picsum.photos/id/1011/300/200"
+         class="cursor-pointer rounded-lg opacity-70 hover:opacity-100 hover:ring-2 hover:ring-cyan-400 transition"&gt;
+    &lt;img onclick="selectImage(this.src)" src="https://picsum.photos/id/1015/300/200"
+         class="cursor-pointer rounded-lg opacity-70 hover:opacity-100 hover:ring-2 hover:ring-cyan-400 transition"&gt;
+    &lt;img onclick="selectImage(this.src)" src="https://picsum.photos/id/1016/300/200"
+         class="cursor-pointer rounded-lg opacity-70 hover:opacity-100 hover:ring-2 hover:ring-cyan-400 transition"&gt;
+    &lt;img onclick="selectImage(this.src)" src="https://picsum.photos/id/1020/300/200"
+         class="cursor-pointer rounded-lg opacity-70 hover:opacity-100 hover:ring-2 hover:ring-cyan-400 transition"&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- SECTION AVANCÉE --&gt;
+&lt;section class="max-w-7xl mx-auto px-6 py-16"&gt;
+  &lt;h3 class="text-2xl font-bold mb-6 text-cyan-400"&gt;Explorations avancées&lt;/h3&gt;
+  &lt;div class="grid md:grid-cols-3 gap-8"&gt;
+    &lt;div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/10 p-6 rounded-xl"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Glassmorphism&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-300"&gt;Utilisation de backdrop-blur, opacity et gradients.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="bg-white/5 p-6 rounded-xl hover:rotate-1 hover:scale-105 transition transform"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Micro-interactions&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;Hover, transition, transform, duration.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="bg-white/5 p-6 rounded-xl ring-1 ring-white/10 hover:ring-cyan-400 transition"&gt;
+      &lt;h4 class="font-semibold mb-2"&gt;Focus & Accessibilité&lt;/h4&gt;
+      &lt;p class="text-sm text-gray-400"&gt;focus:ring, outline-none, aria-friendly.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- FOOTER --&gt;
+&lt;footer class="border-t border-white/10 py-6 text-center text-sm text-gray-500"&gt;
+Tailwind CSS – Advanced Web 2 Template
+&lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+  </pre>
+</section>
+
+
+<section id="analyse">
+<h3 class="text-cyan-400 text-xl font-bold mb-4">Analyse des classes Tailwind</h3>
+<div class="question"><span>❓</span>Q1 : Identifiez 10 classes utilitaires utilisées et expliquez leur rôle.</div>
+<textarea id="q1Answer" class="w-full p-2 rounded bg-gray-900 text-gray-200" rows="6" placeholder="Tapez votre réponse ici..."></textarea>
+  
+  <button 
+    class="mt-2 px-4 py-2 bg-cyan-500 text-black rounded hover:bg-cyan-400 transition"
+    onclick="evaluateAnswer('q1')">
+    Évaluer
+  </button>
+  <p id="q1Feedback" class="mt-2 text-yellow-300"></p>
+<div class="question" style="background: rgba(255,255,0,0.1); border-left-color: #facc15;"><span>❓</span>Q2 : Classez ces classes par catégories : layout, typographie, interaction, responsive.</div>
+<textarea id="q2Answer" class="w-full p-2 rounded bg-gray-900 text-gray-200" rows="6" placeholder="Tapez votre réponse ici..."></textarea>
+  
+  <button 
+    class="mt-2 px-4 py-2 bg-cyan-500 text-black rounded hover:bg-cyan-400 transition"
+    onclick="evaluateAnswer('q2')">
+    Évaluer
+  </button>
+  <p id="q2Feedback" class="mt-2 text-yellow-300"></p>
+</section>
+<script>
+  // Objet JSON pour stocker toutes les réponses du TP
+  let tpAnswers = {};
+
+  function evaluateAnswer(questionId) {
+    const answer = document.getElementById(questionId + 'Answer').value;
+    
+    // Stockage dans l'objet JSON
+    tpAnswers[questionId] = answer;
+
+    // Évaluation simple : compter les mots-clés attendus
+    const keywords = ['text', 'bg', 'flex', 'grid', 'hover', 'transition', 'p-', 'm-', 'rounded', 'ring'];
+    let score = 0;
+    keywords.forEach(k => {
+      if(answer.toLowerCase().includes(k)) score++;
+    });
+
+    // Affichage du feedback
+    const feedback = document.getElementById(questionId + 'Feedback');
+    feedback.textContent = `Score indicatif : ${score}/${keywords.length}`;
+    
+    // Pour envoyer au serveur (Node/PHP/Flask), on ferait un fetch POST
+    // fetch('/saveTP', { method:'POST', body: JSON.stringify(tpAnswers) })
+  }
+</script>
+<section class="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl mt-8">
+
+  <!-- Zone saisie code -->
+  <div class="mb-4">
+    <label for="secretCode" class="block text-gray-300 mb-2">Entrez le code pour afficher la réponse :</label>
+    <input type="text" id="secretCode" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Entrez le code">
+  </div>
+
+  <button onclick="checkCode()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded">
+    Afficher la réponse
+  </button>
+
+  <!-- Section cachée -->
+  <div id="secretSection" class="hidden mt-6 p-4 bg-gray-700 rounded">
+    <h2 class="text-xl font-bold text-cyan-400 mb-2">Section Secrète</h2>
+    <h3 class="text-xl font-bold text-cyan-400 mb-4">Réponse Q1 : Classes utilitaires et rôle</h3>
+
+<ol class="list-decimal list-inside space-y-2 text-gray-200">
+  <li>
+    <span class="font-semibold">bg-gradient-to-br</span> : applique un dégradé de fond diagonal (bottom-right) entre plusieurs couleurs.
+  </li>
+  <li>
+    <span class="font-semibold">text-cyan-400</span> : définit la couleur du texte en cyan clair.
+  </li>
+  <li>
+    <span class="font-semibold">p-6 / px-6 / py-4</span> : applique des padding uniformes ou spécifiques sur les axes X et Y.
+  </li>
+  <li>
+    <span class="font-semibold">m-4</span> : applique une marge uniforme autour de l’élément.
+  </li>
+  <li>
+    <span class="font-semibold">rounded-xl / rounded-2xl / rounded-lg</span> : arrondit les coins des éléments à différents rayons.
+  </li>
+  <li>
+    <span class="font-semibold">hover:scale-105</span> : applique un léger agrandissement lorsque l’élément est survolé (hover).
+  </li>
+  <li>
+    <span class="font-semibold">flex / grid</span> : active les modèles de disposition flexbox ou grille pour organiser les enfants.
+  </li>
+  <li>
+    <span class="font-semibold">gap-4 / gap-6 / space-y-4</span> : définit l’espacement entre les éléments enfants dans un flex ou grid.
+  </li>
+  <li>
+    <span class="font-semibold">shadow-2xl / shadow-xl</span> : applique des ombres portées pour donner du relief aux éléments.
+  </li>
+  <li>
+    <span class="font-semibold">ring-1 / ring-2 / ring-cyan-500/30</span> : ajoute un contour lumineux autour de l’élément (ring) avec couleur et opacité personnalisables.
+  </li>
+</ol>
+
+<p class="mt-4 text-gray-400 italic">
+Ces classes illustrent le principe “utility-first” de Tailwind : chaque classe a une **fonction unique**, ce qui permet de construire rapidement des interfaces complexes sans écrire de CSS personnalisé.
+</p>
+<h3 class="text-xl font-bold text-cyan-400 mb-4">
+  Réponse Q2 : Classification des classes utilitaires
+</h3>
+
+<div class="space-y-4 text-gray-200">
+
+  <p>
+    Les classes utilitaires Tailwind peuvent être regroupées selon leur rôle fonctionnel
+    dans la mise en page, la typographie, l’interaction et le responsive design.
+  </p>
+
+  <!-- LAYOUT -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      📐 Layout (Structure & disposition)
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li><span class="font-semibold">flex</span> – active le modèle Flexbox</li>
+      <li><span class="font-semibold">grid</span> – active le modèle Grid</li>
+      <li><span class="font-semibold">md:grid-cols-2</span> – définit 2 colonnes à partir du breakpoint medium</li>
+      <li><span class="font-semibold">justify-between</span> – espace les éléments sur l’axe principal</li>
+      <li><span class="font-semibold">items-center</span> – aligne les éléments sur l’axe secondaire</li>
+      <li><span class="font-semibold">gap-4 / gap-6</span> – espace entre les éléments enfants</li>
+      <li><span class="font-semibold">max-w-7xl</span> – limite la largeur maximale du conteneur</li>
+    </ul>
+  </div>
+
+  <!-- TYPOGRAPHIE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      ✍️ Typographie
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li><span class="font-semibold">text-xl / text-2xl / text-4xl</span> – taille du texte</li>
+      <li><span class="font-semibold">font-bold / font-extrabold</span> – épaisseur du texte</li>
+      <li><span class="font-semibold">tracking-widest</span> – espacement entre les lettres</li>
+      <li><span class="font-semibold">text-gray-400 / text-cyan-400</span> – couleur du texte</li>
+      <li><span class="font-semibold">leading-tight</span> – hauteur de ligne réduite</li>
+    </ul>
+  </div>
+
+  <!-- INTERACTION -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🧩 Interaction & effets
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li><span class="font-semibold">hover:bg-white/10</span> – effet au survol</li>
+      <li><span class="font-semibold">hover:scale-105</span> – agrandissement au survol</li>
+      <li><span class="font-semibold">transition</span> – animation fluide</li>
+      <li><span class="font-semibold">transform</span> – autorise les transformations CSS</li>
+      <li><span class="font-semibold">cursor-pointer</span> – curseur interactif</li>
+      <li><span class="font-semibold">shadow-xl / shadow-2xl</span> – ombre pour retour visuel</li>
+    </ul>
+  </div>
+
+  <!-- RESPONSIVE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      📱 Responsive design
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li><span class="font-semibold">md:flex</span> – flexbox activé à partir du breakpoint medium</li>
+      <li><span class="font-semibold">hidden md:flex</span> – masqué sur mobile, visible sur desktop</li>
+      <li><span class="font-semibold">sm:grid-cols-2</span> – 2 colonnes à partir du breakpoint small</li>
+      <li><span class="font-semibold">lg:grid-cols-4</span> – 4 colonnes sur grands écrans</li>
+    </ul>
+  </div>
+
+  <p class="mt-4 text-gray-400 italic">
+    Cette classification montre comment Tailwind permet de raisonner en termes
+    de <span class="font-semibold">fonction</span> plutôt qu’en termes de fichiers CSS.
+  </p>
+
+</div>
+
+  </div>
+</section>
+<section id="comparaison">
+<h3 class="text-cyan-400 text-xl font-bold mb-4"> Comparaison Tailwind vs CSS classique</h3>
+<div class="question"><span>❓</span>Q3 : Testez l’efficacité : temps pour changer couleurs, ajouter composant, responsive. Comparez Tailwind et CSS.</div>
+<textarea></textarea>
+<div class="question" style="background: rgba(255,0,255,0.1); border-left-color: #d946ef;"><span>❓</span>Q4 : Analysez la scalabilité : lignes de code, maintenance, lisibilité équipe.</div>
+<textarea></textarea>
+</section>
+<section class="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl mt-8">
+
+  <!-- Zone saisie code -->
+  <div class="mb-4">
+    <label for="secretCode" class="block text-gray-300 mb-2">Entrez le code pour afficher la réponse :</label>
+    <input type="text" id="secretCode2" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Entrez le code">
+  </div>
+
+  <button onclick="checkCode2()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-black font-semibold rounded">
+    Afficher la réponse
+  </button>
+
+  <!-- Section cachée -->
+<div id="secretSection2" class="hidden mt-6 p-4 bg-gray-700 rounded">
+    <h2 class="text-xl font-bold text-cyan-400 mb-2">Section Secrète</h2>
+    <h3 class="text-xl font-bold text-cyan-400 mb-4">
+  Comparaison Tailwind CSS vs CSS classique
+    </h3>
+
+<div class="space-y-4 text-gray-200">
+
+  <p>
+    Cette comparaison s’appuie sur plusieurs critères : <span class="font-semibold text-cyan-300">productivité</span>,
+    <span class="font-semibold text-cyan-300">maintenabilité</span>,
+    <span class="font-semibold text-cyan-300">performance</span> et
+    <span class="font-semibold text-cyan-300">scalabilité</span>.
+  </p>
+
+  <ul class="list-disc list-inside space-y-2">
+    <li>
+      <span class="font-semibold">Tailwind CSS</span> adopte une approche
+      <span class="italic">utility-first</span> : chaque classe correspond à une règle CSS unique.
+      Cela permet un prototypage rapide et une réduction du contexte entre HTML et CSS.
+    </li>
+
+    <li>
+      <span class="font-semibold">CSS classique</span> repose sur des fichiers séparés et des sélecteurs personnalisés,
+      ce qui favorise une meilleure lisibilité conceptuelle mais augmente le temps de développement initial.
+    </li>
+
+    <li>
+      En termes de <span class="font-semibold">maintenabilité</span>, Tailwind limite les conflits CSS
+      (pas de cascade complexe), tandis que le CSS classique peut devenir difficile à maintenir
+      dans les projets volumineux sans conventions strictes (BEM, SMACSS, etc.).
+    </li>
+
+    <li>
+      Concernant la <span class="font-semibold">performance</span>, Tailwind en production génère un
+      CSS optimisé et purgé (via PurgeCSS), souvent plus léger qu’un fichier CSS classique non maîtrisé.
+    </li>
+
+    <li>
+      Pour la <span class="font-semibold">scalabilité</span>, Tailwind est particulièrement adapté
+      aux équipes et aux projets évolutifs, tandis que le CSS classique est plus pédagogique
+      pour comprendre les fondements du styling web.
+    </li>
+  </ul>
+
+  <div class="mt-4 p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-xl">
+    <p class="font-semibold text-cyan-300 mb-2">Conclusion :</p>
+    <p class="text-gray-300">
+      Tailwind CSS est idéal pour des projets modernes, rapides et collaboratifs,
+      alors que le CSS classique reste indispensable pour comprendre les bases
+      et pour les projets nécessitant un contrôle très fin du style.
+    </p>
+  </div>
+
+</div>
+
+<h3 class="text-xl font-bold text-cyan-400 mb-4">
+  Réponse Q3 : Test d’efficacité – Tailwind CSS vs CSS classique
+</h3>
+
+<div class="space-y-4 text-gray-200">
+
+  <p>
+    Cette évaluation mesure l’efficacité des deux approches selon trois critères :
+    <span class="font-semibold text-cyan-300">changement de couleurs</span>,
+    <span class="font-semibold text-cyan-300">ajout de composants</span> et
+    <span class="font-semibold text-cyan-300">responsive design</span>.
+  </p>
+
+  <!-- CHANGEMENT DE COULEURS -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🎨 Changement de couleurs
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Changement immédiat en modifiant une classe (ex. <code>bg-cyan-500</code> → <code>bg-purple-600</code>).
+        Temps estimé : <strong>quelques secondes</strong>.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        Modification du fichier CSS, recherche du sélecteur, gestion de la cascade.
+        Temps estimé : <strong>plusieurs minutes</strong> selon la taille du projet.
+      </li>
+    </ul>
+  </div>
+
+  <!-- AJOUT DE COMPOSANT -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🧩 Ajout d’un composant
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Composition rapide à partir de classes existantes sans écrire de CSS.
+        Temps estimé : <strong>rapide</strong>, idéal pour le prototypage.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        Nécessite la création de nouvelles classes et parfois de nouveaux fichiers CSS.
+        Temps estimé : <strong>plus long</strong>, mais plus structuré conceptuellement.
+      </li>
+    </ul>
+  </div>
+
+  <!-- RESPONSIVE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      📱 Gestion du responsive
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Responsive intégré via les préfixes (<code>sm:</code>, <code>md:</code>, <code>lg:</code>).
+        Implémentation rapide et lisible dans le HTML.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        Gestion via media queries explicites, plus verbeuse mais très flexible.
+      </li>
+    </ul>
+  </div>
+
+  <!-- SYNTHESE -->
+  <div class="mt-4 p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-xl">
+    <p class="font-semibold text-cyan-300 mb-2">Synthèse :</p>
+    <p class="text-gray-300">
+      Tailwind CSS offre une efficacité supérieure pour des modifications rapides et itératives,
+      tandis que le CSS classique reste pertinent pour des projets nécessitant une architecture
+      stylistique très contrôlée.
+    </p>
+  </div>
+
+</div>
+<h3 class="text-xl font-bold text-cyan-400 mb-4">
+  Réponse Q4 : Analyse de la scalabilité – Tailwind CSS vs CSS classique
+</h3>
+
+<div class="space-y-4 text-gray-200">
+
+  <p>
+    La scalabilité d’une solution front-end se mesure par sa capacité à évoluer
+    en termes de <span class="font-semibold text-cyan-300">volume de code</span>,
+    de <span class="font-semibold text-cyan-300">maintenance</span> et de
+    <span class="font-semibold text-cyan-300">lisibilité pour une équipe</span>.
+  </p>
+
+  <!-- LIGNES DE CODE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      📄 Volume de lignes de code
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Le CSS généré est minimal en production (purge des classes inutilisées).
+        Le volume est déplacé vers le HTML, ce qui réduit la duplication de styles.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        Le nombre de lignes CSS augmente avec le projet, surtout si les composants
+        partagent des styles similaires non factorisés.
+      </li>
+    </ul>
+  </div>
+
+  <!-- MAINTENANCE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🔧 Maintenance
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Faible risque de régression car les styles sont locaux aux composants.
+        Les changements sont explicites et immédiats.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        La cascade et la spécificité peuvent provoquer des effets de bord,
+        rendant la maintenance plus complexe à long terme.
+      </li>
+    </ul>
+  </div>
+
+  <!-- LISIBILITE EQUIPE -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      👥 Lisibilité et travail en équipe
+    </h4>
+    <ul class="list-disc list-inside space-y-1 text-gray-300">
+      <li>
+        <span class="font-semibold">Tailwind CSS :</span>
+        Une fois les conventions maîtrisées, les classes sont explicites et partagées
+        par toute l’équipe, favorisant une cohérence globale.
+      </li>
+      <li>
+        <span class="font-semibold">CSS classique :</span>
+        La lisibilité dépend fortement des conventions de nommage
+        (BEM, OOCSS, etc.) et de la discipline de l’équipe.
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="mt-4 p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-xl">
+    <p class="font-semibold text-cyan-300 mb-2">Conclusion :</p>
+    <p class="text-gray-300">
+      Tailwind CSS est particulièrement scalable pour les projets modernes
+      et les équipes nombreuses, tandis que le CSS classique reste pertinent
+      dans des contextes pédagogiques ou très fortement structurés.
+    </p>
+  </div>
+
+</div>
+
+</div>
+</section>
+
+<script>
+function checkCode() {
+  const input = document.getElementById('secretCode').value;
+  const secret = "TP2026"; // <-- le code à saisir
+  const section = document.getElementById('secretSection');
+
+  if(input === secret) {
+    section.classList.remove('hidden');
+    alert("Code correct !");
+  } else {
+    alert("Code incorrect. Réessayez !");
+  }
+}
+function checkCode2() {
+  const input = document.getElementById('secretCode2').value;
+  const secret = "TP2026"; // <-- le code à saisir
+  const section = document.getElementById('secretSection2');
+
+  if(input === secret) {
+    section.classList.remove('hidden');
+    alert("Code correct !");
+  } else {
+    alert("Code incorrect. Réessayez !");
+  }
+}
+</script>
+
+<section id="travail">
+<h3 class="text-cyan-400 text-xl font-bold mb-4"> Travail final – Projet pratique</h3>
+<div class="question"><span>❓</span>Q5 : Choisissez un projet réel et adaptez la template Tailwind ou CSS :</div>
+<p class="text-gray-200 mb-4">
+  Choisissez un projet réel et adaptez la template proposée pour inclure des fonctionnalités interactives et un design cohérent.
+  Vous devez implémenter les éléments suivants :
+</p>
+
+<div class="grid gap-4">
+
+  <!-- Menu interactif -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🧭 Menu interactif
+    </h4>
+    <p class="text-gray-300">
+      Créez un menu de navigation responsive. Vous pouvez utiliser
+      <code class="bg-gray-700 px-1 rounded">hover:</code>, <code class="bg-gray-700 px-1 rounded">focus:</code>
+      et des classes de responsive comme <code>md:flex</code>.
+    </p>
+    <p class="text-gray-400 italic mt-1">
+      Indice : Essayez un menu “sticky” ou un sidebar interactif.
+    </p>
+  </div>
+
+  <!-- Boutons cliquables -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🔘 Boutons cliquables
+    </h4>
+    <p class="text-gray-300">
+      Implémentez des boutons qui réagissent au hover, focus ou click.
+      Vous pouvez utiliser <code class="bg-gray-700 px-1 rounded">transition</code> et <code class="bg-gray-700 px-1 rounded">transform</code>.
+    </p>
+    <p class="text-gray-400 italic mt-1">
+      Indice : Utilisez les classes <code class="bg-gray-700 px-1 rounded">hover:scale-105</code> ou <code class="bg-gray-700 px-1 rounded">active:scale-95</code>.
+    </p>
+  </div>
+
+  <!-- Galerie ou section dynamique -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🖼 Galerie ou section dynamique
+    </h4>
+    <p class="text-gray-300">
+      Créez une galerie interactive ou une section dont le contenu peut changer dynamiquement.
+      Vous pouvez vous inspirer de <code class="bg-gray-700 px-1 rounded">onclick</code> et des transitions sur les images.
+    </p>
+    <p class="text-gray-400 italic mt-1">
+      Indice : Essayez de mettre en place une image principale qui change au clic sur un thumbnail.
+    </p>
+  </div>
+
+  <!-- Responsive design -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      📱 Responsive design
+    </h4>
+    <p class="text-gray-300">
+      Assurez-vous que votre projet s’affiche correctement sur mobile, tablette et desktop.
+      Utilisez les breakpoints Tailwind : <code class="bg-gray-700 px-1 rounded">sm:</code>, <code class="bg-gray-700 px-1 rounded">md:</code>, <code class="bg-gray-700 px-1 rounded">lg:</code>.
+    </p>
+    <p class="text-gray-400 italic mt-1">
+      Indice : Vérifiez le comportement des menus, galerie et boutons sur différents écrans.
+    </p>
+  </div>
+
+  <!-- Personnalisation couleurs, typographie, effets -->
+  <div class="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+    <h4 class="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+      🎨 Personnalisation : couleurs, typographie, effets
+    </h4>
+    <p class="text-gray-300">
+      Adaptez les couleurs, polices et effets pour donner un style unique à votre projet.
+      Expérimentez avec <code class="bg-gray-700 px-1 rounded">bg-gradient-to-br</code>, <code class="bg-gray-700 px-1 rounded">text-cyan-400</code>,
+      <code class="bg-gray-700 px-1 rounded">hover:scale-105</code> ou <code class="bg-gray-700 px-1 rounded">shadow-2xl</code>.
+    </p>
+    <p class="text-gray-400 italic mt-1">
+      Indice : Essayez de créer une identité visuelle cohérente et futuriste.
+    </p>
+  </div>
+
+<textarea placeholder="Expliquez vos choix techniques et votre démarche..."></textarea>
+</section>
+<section class="mt-6 p-4 bg-gray-800 rounded-lg text-center">
+  <button 
+    class="px-6 py-3 bg-green-500 text-black font-bold rounded hover:bg-green-400 transition"
+    onclick="downloadTPAnswers()">
+    Télécharger JSON final
+  </button>
+</section>
+
+<script>
+  function downloadTPAnswers() {
+    // Convertir l'objet en JSON
+    const dataStr = JSON.stringify(tpAnswers, null, 2);
+
+    // Créer un blob et un lien de téléchargement
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'TP_Answers.json';
+    a.click();
+
+    // Libérer l'URL
+    URL.revokeObjectURL(url);
+  }
+</script>
+<footer class="border-t border-white/20 py-6 text-center text-sm text-gray-400">
+TP Web 2 – Tailwind CSS vs CSS Classique – Futuriste avec Sidebar et Header fixe
+</footer>
+
+</body>
+</html>
