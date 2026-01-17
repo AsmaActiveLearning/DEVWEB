@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TP 2 Avancé Web Full-Stack</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b,#111827);
+  color: #e5e7eb;
+  margin: 0;
+  padding-top: 100px;
+  padding-left: 250px;
+  box-sizing: border-box;
+}
+header {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  width: calc(100% - 250px);
+  height: 100px;
+  z-index: 100;
+  background: #000;
+  backdrop-blur: blur(8px);
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(15,23,42,0.95);
+  border-right: 1px solid #0ff;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 60;
+}
+#sidebar h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0ff;
+  margin-bottom: 12px;
+}
+#sidebar ul { list-style: none; padding: 0; }
+#sidebar ul li { margin-bottom: 8px; }
+#sidebar ul li a { color: #e5e7eb; text-decoration: none; font-size: 14px; }
+#sidebar ul li a:hover { color: #06b6d4; }
+
+section {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 12px;
+  background: rgba(15,23,42,0.85);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+h2 { color: #0ff; font-weight: bold; margin-bottom: 12px; }
+h3 { color: #facc15; margin-top: 12px; margin-bottom: 8px; }
+pre { background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
+button.copy-btn { background: #0ff; color: #111827; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 8px; font-weight: bold; }
+button.copy-btn:hover { background: #06b6d4; }
+textarea { width: 100%; min-height: 100px; margin-top: 8px; padding: 10px; border-radius: 6px; border: 1px solid #0ff; background: #111827; color: #e5e7eb; }
+button.evaluate-btn { background: #facc15; color: #111827; padding: 8px 16px; border-radius: 6px; font-weight: bold; margin-top: 8px; cursor: pointer; }
+button.evaluate-btn:hover { background: #eab308; }
+</style>
+
+<script>
+function copyCode(id){
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  alert("Code copié !");
+}
+
+function evaluateAnswer(textareaId, outputId){
+  const text = document.getElementById(textareaId).value;
+  let score = 0;
+  if(text.trim().length > 0) score = 100; 
+  document.getElementById(outputId).innerText = "Évaluation simple : " + score + "%";
+}
+</script>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar">
+<h3>Navigation TP2 </h3>
+<ul>
+<li><a href="#front">1. Front-End</a></li>
+<li><a href="#back">2. Back-End</a></li>
+<li><a href="#integration">3. Intégration Full-Stack</a></li>
+<li><a href="#astuces">4. Astuces & Bonnes Pratiques</a></li>
+<li><a href="#exercices">5. Exercices & Évaluation</a></li>
+</ul>
+</div>
+
+<!-- Header -->
+<header class="flex justify-between items-center mb-6">
+<div>
+<h1 class="text-3xl font-extrabold text-cyan-400">TP 2 Dev Web Full-Stack</h1>
+<p class="text-gray-400 mt-2">Gestion d'événements avec Node.js, Express et Front-End moderne</p>
+</div>
+</header>
+<section class="text-gray-400 mt-2">
+  <h1 class="text-3xl font-extrabold text-cyan-400">Partie I: Node, express et Json</h1>
+</section>
+<section id="node-express-tp" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f9; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.1);">
+
+  <h2 style="color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 6px;">Pourquoi Node.js et Express ?</h2>
+
+  <div style="margin-top: 20px; padding: 15px; background: #e8f0fe; border-left: 5px solid #1a73e8; border-radius: 8px;">
+    <h2 style="color: #0b3d91;">Node.js : le moteur serveur JavaScript</h2>
+    <p class="text-gray-400 mt-2">Node.js est <strong>un environnement d’exécution JavaScript côté serveur</strong>, basé sur le moteur V8 de Google Chrome.</p>
+    <ul class="text-gray-400 mt-2" style="margin-left: 20px;">
+      <li><strong>Single-threaded :</strong> Gère des milliers de connexions simultanées via l’<em>event loop</em>.</li>
+      <li><strong>Non bloquant :</strong> Les opérations E/S sont asynchrones, pour des performances optimales.</li>
+      <li><strong>JavaScript côté serveur :</strong> Réutilisation du code front-end côté back-end.</li>
+    </ul>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">const</span> http = <span class="string">require('http')</span>;
+
+http.createServer((req, res) => {
+  res.write(<span class="string">'Hello Node.js'</span>);
+  res.end();
+}).listen(<span class="number">3000</span>);
+</code></pre>
+  </div>
+</div>
+  <div style="margin-top: 25px; padding: 15px; background: #fff3e0; border-left: 5px solid #fb8c00; border-radius: 8px;">
+    <h2 style="color: #e65100;"> Express : le framework web léger</h2>
+    <p class="text-gray-400 mt-2">Express est <strong>un framework minimaliste pour Node.js</strong> qui simplifie la création d’applications web.</p>
+    <ul class="text-gray-400 mt-2" style="margin-left: 20px;">
+      <li>Gestion simplifiée des routes HTTP : GET, POST, PUT, DELETE…</li>
+      <li>Middlewares pour authentification, logging, parsing JSON, etc.</li>
+      <li>Structure claire : séparation routes, contrôleurs et services.</li>
+    </ul>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">const</span> express = <span class="string">require('express')</span>;
+<span class="keyword">const</span> app = express();
+
+app.use(express.json());
+
+app.get(<span class="string">'/events'</span>, (req, res) => {
+  res.json([{title: <span class="string">"TP Node"</span>, date: <span class="string">"2026-01-11"</span>}]);
+});
+
+app.post(<span class="string">'/events'</span>, (req, res) => {
+  <span class="keyword">const</span> { title } = req.body;
+  res.json({status: <span class="string">"ok"</span>, title});
+});
+
+app.listen(<span class="number">3000</span>, () => console.log(<span class="string">"Server running on port 3000"</span>));
+</code></pre>
+  </div>
+</div>
+  <div style="margin-top: 25px; padding: 15px; background: #e0f7fa; border-left: 5px solid #00acc1; border-radius: 8px;">
+    <h2 style="color: #006064;"> Rôle combiné Node + Express</h2>
+    <table class="text-gray-400 mt-2" style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+      <thead>
+        <tr style="background: #00acc1; color: #fff;">
+          <th style="padding: 8px; border-radius: 6px 0 0 6px;">Élément</th>
+          <th style="padding: 8px;">Rôle dans le TP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #b2ebf2;">
+          <td style="padding: 8px;">Node.js</td>
+          <td style="padding: 8px;">Exécute le code côté serveur et gère les requêtes HTTP asynchrones</td>
+        </tr>
+        <tr style="background: #80deea;">
+          <td style="padding: 8px;">Express</td>
+          <td style="padding: 8px;">Simplifie routes, middlewares et structure du code</td>
+        </tr>
+        <tr style="background: #b2ebf2;">
+          <td style="padding: 8px;">Front-end</td>
+          <td style="padding: 8px;">Envoie les requêtes HTTP et affiche dynamiquement les événements</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="text-gray-400 mt-2" style="margin-top: 12px;"><strong>Astuce ingénieur :</strong> Node seul fonctionne mais Express rend le code maintenable et extensible, indispensable pour des projets avancés.</p>
+  </div>
+
+</section>
+
+<style>
+/* Styles pour blocs de code avec coloration syntaxique simple */
+.code-block {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Syntax highlighting basique */
+.code-block .keyword { color: #569cd6; font-weight: bold; }
+.code-block .string { color: #d69d85; }
+.code-block .number { color: #b5cea8; }
+</style>
+
+<!-- Front-End -->
+<!-- ================= FRONT-END ================= -->
+<section id="front" class="tp-card blue">
+
+  <h2>Front-End (HTML / JavaScript)</h2>
+
+  <p class="text-gray-400 mt-2">
+    Le <strong>front-end</strong> fournit l’interface utilisateur permettant
+    de <strong>créer</strong> et <strong>visualiser</strong> les événements.
+    La communication avec le serveur se fait via la <strong>Fetch API</strong>,
+    qui envoie des requêtes HTTP asynchrones vers l’API Node.js.
+  </p>
+
+  <h3 class="text-gray-400 mt-2"> <strong>Formulaire + communication HTTP</strong> </h3>
+
+ <div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="tag">&lt;form</span> <span class="attr">id</span>=<span class="string">"eventForm"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"title"</span> <span class="attr">required</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"date"</span> <span class="attr">id</span>=<span class="string">"date"</span> <span class="attr">required</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;textarea</span> <span class="attr">id</span>=<span class="string">"description"</span><span class="tag">&gt;&lt;/textarea&gt;</span>
+  <span class="tag">&lt;button&gt;</span>Envoyer<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span>
+
+<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="string">"eventsList"</span><span class="tag">&gt;&lt;/ul&gt;</span>
+
+<span class="keyword">const</span> BASE_URL = <span class="string">"http://localhost:3000/events"</span>;
+
+document.getElementById(<span class="string">'eventForm'</span>)
+  .addEventListener(<span class="string">'submit'</span>, <span class="keyword">async</span> (e) =&gt; {
+    e.preventDefault();
+
+    <span class="keyword">const</span> event = {
+      title: document.getElementById(<span class="string">'title'</span>).value,
+      date: document.getElementById(<span class="string">'date'</span>).value,
+      description: document.getElementById(<span class="string">'description'</span>).value
+    };
+
+    <span class="keyword">await</span> fetch(BASE_URL, {
+      method: <span class="string">'POST'</span>,
+      headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      body: JSON.stringify(event)
+    });
+
+    fetchEvents();
+});
+</code></pre></div>
+
+  <p class="tip">
+    💡 <strong>Astuce ingénieur :</strong>  
+    La validation côté client améliore l’expérience utilisateur,
+    mais <strong>ne remplace jamais</strong> la validation côté serveur.
+  </p>
+</section>
+
+<!-- ================= BACK-END ================= -->
+<section id="back" class="tp-card orange">
+
+  <h2> Back-End (Node.js / Express)</h2>
+
+  <p>
+    Le serveur Express agit comme une <strong>API REST</strong>.
+    Il expose des routes HTTP et applique des <strong>middlewares</strong>
+    pour gérer le CORS, le parsing JSON et la validation des données.
+  </p>
+
+  <h3>📌 API REST minimale mais robuste</h3>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">const</span> express = <span class="string">require('express')</span>;
+<span class="keyword">const</span> cors = <span class="string">require('cors')</span>;
+
+<span class="keyword">const</span> app = express();
+app.use(cors());
+app.use(express.json());
+
+<span class="keyword">let</span> events = [];
+
+app.get(<span class="string">'/events'</span>, (req, res) =&gt; {
+  res.json(events);
+});
+
+app.post(<span class="string">'/events'</span>, (req, res) =&gt; {
+  <span class="keyword">const</span> { title, date, description } = req.body;
+
+  <span class="keyword">if</span> (!title || !date) {
+    <span class="keyword">return</span> res.status(<span class="number">400</span>)
+      .json({ error: <span class="string">"Champs manquants"</span> });
+  }
+
+  events.push({ title, date, description });
+  res.json({ status: <span class="string">"ok"</span> });
+});
+
+app.listen(<span class="number">3000</span>, () =&gt;
+  console.log(<span class="string">"Server running on port 3000"</span>)
+);
+</code></pre></div>
+
+  <ul>
+    <li>✔️ Validation serveur obligatoire</li>
+    <li>✔️ Middleware CORS indispensable en front/back séparés</li>
+    <li>❌ Stockage mémoire interdit en production</li>
+  </ul>
+</section>
+
+<!-- ================= INTEGRATION ================= -->
+<section id="integration" class="tp-card cyan">
+
+  <h2> Intégration Full-Stack</h2>
+
+  <p>
+    Le <strong>front-end</strong> consomme l’API REST via Fetch.
+    Le format JSON agit comme <strong>contrat d’échange</strong>
+    entre les deux couches.
+  </p>
+
+  <div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">async function</span> fetchEvents() {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> res = <span class="keyword">await</span> fetch(<span class="string">'/events'</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> res.json();
+
+    data.forEach(ev =&gt; console.log(ev));
+  } <span class="keyword">catch</span> (err) {
+    console.error(err);
+  }
+}
+</code></pre></div>
+
+  <p class="tip">
+    💡 <strong>Astuce avancée :</strong>  
+    Toujours gérer les erreurs réseau et serveur (timeouts, 500, 404).
+  </p>
+</section>
+
+<!-- ================= ASTUCES ================= -->
+<section id="astuces" class="tp-card dark">
+
+  <h2> Astuces & Bonnes pratiques</h2>
+
+  <ul>
+    <li>Utiliser <code>dotenv</code> pour les variables sensibles</li>
+    <li>Ne jamais bloquer l’event loop</li>
+    <li>Séparer routes / contrôleurs / services</li>
+    <li>Utiliser <code>helmet</code>, <code>rate-limit</code>, <code>morgan</code></li>
+  </ul>
+</section>
+<section id="schema-realtime" class="tp-card cyan">
+
+  <h2>🔁 Schéma explicatif : fonctionnement en temps réel</h2>
+
+  <p>
+    Ce schéma illustre pourquoi les modifications apparaissent
+    <strong>sans rechargement de la page</strong> lors de l’ajout d’un événement.
+  </p>
+
+  <div class="schema">
+
+    <!-- Browser -->
+    <div class="box browser">
+      <h3>Navigateur</h3>
+      <p>
+        HTML / CSS<br>
+        JavaScript actif<br>
+        DOM en mémoire
+      </p>
+    </div>
+
+    <div class="arrow">fetch()</div>
+
+    <!-- Server -->
+    <div class="box server">
+      <h3>Serveur Node.js</h3>
+      <p>
+        Express<br>
+        Routes API<br>
+        JSON
+      </p>
+    </div>
+
+  </div>
+
+  <div class="schema-steps">
+    <ol>
+      <li>L’utilisateur soumet le formulaire</li>
+      <li>JavaScript intercepte l’événement (<code>preventDefault()</code>)</li>
+      <li>Fetch envoie une requête HTTP asynchrone</li>
+      <li>Node.js traite la requête et renvoie du JSON</li>
+      <li>JavaScript met à jour le DOM</li>
+      <li>Le navigateur redessine la page automatiquement</li>
+    </ol>
+  </div>
+
+  <p class="tip">
+    💡 <strong>Point clé :</strong>  
+    Aucune navigation HTTP n’a lieu. Le DOM est modifié en mémoire,
+    ce qui donne l’illusion du temps réel.
+  </p>
+
+</section>
+<!-- Travail à Faire -->
+<section id="travail" class="tp-card green">
+  <h2>🛠️ Travail à Faire : Application de Gestion d'Événements</h2>
+
+  <p>
+    Dans cette section, vous allez implémenter un formulaire complet pour ajouter des événements
+    avec <strong>titre, date, lieu, description, affiche, fiche descriptive</strong> et 
+    <strong>adresse via carte interactive Leaflet</strong>.
+  </p>
+
+  <!-- Étape 1 : Formulaire complet -->
+  <div class="step">
+    <h2 style="color:#1a73e8; border-bottom:2px solid #1a73e8; padding-bottom:6px;">
+Formulaire HTML de création d’un événement
+</h2>
+
+<p style="color:#555; margin-top:10px;">
+Ce formulaire représente la <strong>couche Front-end</strong> du TP.  
+Il collecte les informations utilisateur qui seront envoyées au serveur Node.js
+via une requête <strong>POST</strong>.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="tag">&lt;form</span> <span class="attr">id</span>=<span class="string">"eventForm"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span>
+         <span class="attr">id</span>=<span class="string">"title"</span>
+         <span class="attr">placeholder</span>=<span class="string">"Titre"</span>
+         <span class="attr">required</span><span class="tag">&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"date"</span>
+         <span class="attr">id</span>=<span class="string">"date"</span>
+         <span class="attr">required</span><span class="tag">&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span>
+         <span class="attr">id</span>=<span class="string">"location"</span>
+         <span class="attr">placeholder</span>=<span class="string">"Lieu"</span>
+         <span class="attr">required</span><span class="tag">&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;textarea</span> <span class="attr">id</span>=<span class="string">"description"</span>
+            <span class="attr">placeholder</span>=<span class="string">"Description"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/textarea&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"file"</span>
+         <span class="attr">id</span>=<span class="string">"poster"</span>
+         <span class="attr">accept</span>=<span class="string">"image/*"</span><span class="tag">&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"file"</span>
+         <span class="attr">id</span>=<span class="string">"fileDesc"</span>
+         <span class="attr">accept</span>=<span class="string">".pdf,.txt"</span><span class="tag">&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"map"</span>
+       <span class="attr">style</span>=<span class="string">"height:300px;"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="string">"button"</span>
+          <span class="attr">id</span>=<span class="string">"validateAddress"</span><span class="tag">&gt;</span>
+    Valider l'adresse
+  <span class="tag">&lt;/button&gt;</span><span class="tag">&lt;br&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="string">"submit"</span><span class="tag">&gt;</span>
+    Enregistrer l'événement
+  <span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;/form&gt;</span>
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:12px;">
+<strong>Note pédagogique :</strong>  
+Ce formulaire est volontairement <em>simple côté HTML</em>.  
+Toute la logique métier (validation, stockage, fichiers, géolocalisation)
+est déportée vers <strong>JavaScript</strong> et <strong>Node.js</strong>.
+</p>
+  <p><strong>Astuce :</strong> Vous pouvez utiliser <code>FormData</code> pour gérer fichiers et texte ensemble.</p>
+  </div>
+
+  <!-- Étape 2 : Carte interactive Leaflet -->
+  <div class="step">
+    <h3> Étape 2 : Ajouter une carte interactive Leaflet</h3>
+    <p>
+      La carte doit permettre à l'utilisateur :
+    </p>
+    <ul>
+      <li>De saisir l'adresse manuellement et mettre à jour le marqueur</li>
+      <li>De cliquer directement sur la carte pour positionner l'événement</li>
+    </ul>
+    
+<p style="color:#555; margin-top:10px;">
+Cette partie illustre l’intégration de <strong>Leaflet</strong> pour permettre à l’utilisateur
+de sélectionner une position géographique directement sur une carte.
+Les coordonnées seront ensuite envoyées au serveur Node.js.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">const</span> map = L.map(<span class="string">'map'</span>)
+  .setView([<span class="number">36.8</span>, <span class="number">10.2</span>], <span class="number">6</span>); 
+<span class="comment">// Carte centrée sur la Tunisie</span>
+
+L.tileLayer(
+  <span class="string">'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'</span>,
+  { <span class="attr">attribution</span>: <span class="string">'© OpenStreetMap'</span> }
+).addTo(map);
+
+<span class="keyword">let</span> marker;
+
+map.on(<span class="string">'click'</span>, e =&gt; {
+  <span class="keyword">if</span> (marker) {
+    marker.setLatLng(e.latlng);
+  } <span class="keyword">else</span> {
+    marker = L.marker(e.latlng).addTo(map);
+  }
+  console.log(<span class="string">"Coordonnées sélectionnées :"</span>, e.latlng);
+});
+
+document.getElementById(<span class="string">'validateAddress'</span>)
+  .addEventListener(<span class="string">'click'</span>, () =&gt; {
+
+  <span class="keyword">const</span> address =
+    document.getElementById(<span class="string">'location'</span>).value;
+
+  <span class="comment">// Ici on pourra utiliser un service de géocodage (Nominatim)</span>
+  console.log(<span class="string">"Adresse validée :"</span>, address);
+});
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:12px;">
+<strong>Astuce ingénieur :</strong>  
+En pratique, l’adresse saisie peut être convertie en coordonnées GPS
+via une API de géocodage (<em>Nominatim, Google Geocoding, Mapbox</em>),
+puis synchronisée avec le marqueur Leaflet.
+</p>
+
+
+  </div>
+
+  <!-- Étape 3 : Enregistrement dans events.json -->
+  <div class="step">
+    <h3> Étape 3 : Sauvegarder l'événement dans <code>events.json</code></h3>
+    <p>
+      Lorsqu’un événement est enregistré :
+    </p>
+    <ul>
+      <li>Envoyer les données au serveur via <code>fetch</code> POST</li>
+      <li>Le serveur ajoute l’événement dans <code>events.json</code></li>
+      <li>Mettre à jour la section résumé sur la page</li>
+    </ul>
+
+  
+    <h2 style="color:#1a73e8; border-bottom:2px solid #1a73e8; padding-bottom:6px;">
+Sauvegarde d’un événement côté serveur (JSON)
+</h2>
+
+<p style="color:#555; margin-top:10px;">
+Avant l’utilisation d’une base de données, nous pouvons stocker les événements
+dans un fichier <strong>events.json</strong>.  
+Cette approche est simple et pédagogique, mais <strong>non adaptée à la production</strong>.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">const</span> fs = <span class="string">require</span>(<span class="string">'fs'</span>);
+
+app.post(<span class="string">'/events'</span>, (req, res) =&gt; {
+  <span class="keyword">const</span> event = req.body;
+
+  <span class="comment">// Lecture du fichier JSON existant</span>
+  <span class="keyword">const</span> events = JSON.parse(
+    fs.readFileSync(<span class="string">'events.json'</span>)
+  );
+
+  <span class="comment">// Ajout du nouvel événement</span>
+  events.push(event);
+
+  <span class="comment">// Écriture dans le fichier avec indentation</span>
+  fs.writeFileSync(
+    <span class="string">'events.json'</span>,
+    JSON.stringify(events, <span class="keyword">null</span>, <span class="number">2</span>)
+  );
+
+  res.json({ <span class="attr">status</span>: <span class="string">"ok"</span> });
+});
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:12px;">
+<strong>Analyse technique :</strong>
+</p>
+
+<ul style="color:#666; margin-left:20px;">
+  <li><strong>fs.readFileSync</strong> : lecture synchrone → bloque l’event loop</li>
+  <li><strong>JSON.parse</strong> : conversion texte → objet JavaScript</li>
+  <li><strong>fs.writeFileSync</strong> : écriture complète du fichier</li>
+</ul>
+
+<div style="
+margin-top:15px;
+padding:12px;
+background:#fff3e0;
+border-left:5px solid #fb8c00;
+border-radius:8px;
+color:#6d4c41;
+">
+<strong>⚠ Limite importante :</strong><br>
+Cette solution ne supporte pas :
+<ul style="margin-left:20px;">
+  <li>accès concurrents</li>
+  <li>grands volumes de données</li>
+  <li>recherches complexes</li>
+</ul>
+➡️ C’est pour cela que nous migrerons vers <strong>MySQL</strong>.
+</div>
+    <p><strong>Astuce :</strong> Toujours lire le fichier avant de push pour éviter d’écraser les événements existants.</p>
+  </div>
+
+  <!-- Étape 4 : Affichage et suppression des événements -->
+  <div class="step">
+    <h2 style="color:#1a73e8; border-bottom:2px solid #1a73e8; padding-bottom:6px;">
+Récupération et affichage des événements (Fetch + CRUD)
+</h2>
+
+<p style="color:#555; margin-top:10px;">
+Cette fonction illustre la récupération des événements depuis le serveur, leur affichage dans le DOM,
+et la suppression d’un événement via une requête <strong>DELETE</strong>.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="keyword">async function</span> fetchEvents() {
+  <span class="keyword">const</span> res = await fetch(<span class="string">'/events'</span>);
+  <span class="keyword">const</span> events = await res.json();
+
+  <span class="keyword">const</span> list = document.getElementById(<span class="string">'eventsList'</span>);
+  list.innerHTML = <span class="string">''</span>;
+
+  events.forEach((ev, idx) =&gt; {
+    <span class="keyword">const</span> li = document.createElement(<span class="string">'li'</span>);
+    li.textContent = `${ev.title} - ${ev.date} - ${ev.location}`;
+
+    <span class="keyword">const</span> btn = document.createElement(<span class="string">'button'</span>);
+    btn.textContent = <span class="string">"Supprimer"</span>;
+
+    btn.onclick = <span class="keyword">async</span> () =&gt; {
+      await fetch(`/events/${idx}`, { method: <span class="string">'DELETE'</span> });
+      fetchEvents();
+    };
+
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+}
+
+fetchEvents();
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:12px;">
+<strong>Explications techniques :</strong>
+<ul style="margin-left:20px;">
+  <li><strong>fetch('/events')</strong> : récupère les événements du serveur via GET</li>
+  <li><strong>events.forEach</strong> : itère et crée dynamiquement les éléments HTML</li>
+  <li><strong>btn.onclick</strong> : envoie DELETE vers le serveur pour supprimer un événement</li>
+  <li><strong>fetchEvents() après suppression</strong> : rechargement de la liste pour mise à jour immédiate</li>
+</ul>
+</p>
+
+  </div>
+
+  <!-- Étape 5 : Recommandations d'amélioration -->
+  <div class="step">
+    <h3>Recommandations d'amélioration</h3>
+    <ul>
+      <li>Gérer la validation des fichiers (taille, type) côté serveur</li>
+      <li>Ajouter un aperçu de l'image et du PDF avant enregistrement</li>
+      <li>Mettre en place un système de notifications pour succès / erreur</li>
+      <li>Ajouter une recherche ou filtre sur les événements</li>
+      
+    </ul>
+  </div>
+
+ 
+</section>
+ <section class="text-gray-400 mt-2">
+  <h1 class="text-3xl font-extrabold text-cyan-400">Partie II: Node, express et MySQL</h1>
+  </section>
+<style>
+.tp-card.green {
+  background: #e8f5e9;
+  border: 2px solid #43a047;
+  border-radius: 12px;
+ margin: 25px auto;
+  padding: 20px;
+}
+
+.step {
+  background: #ffffffdd;
+  border-left: 4px solid #43a047;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 8px;
+}
+
+.step h3 {
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+.copy-btn {
+  margin-bottom: 6px;
+  background-color: #43a047;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background-color: #2e7d32;
+}
+
+pre {
+  background: #263238;
+  color: #eceff1;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+</style>
+
+<style>
+/* ===== Schéma ===== */
+
+.schema {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  gap: 30px;
+}
+
+.box {
+  width: 260px;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.browser {
+  background: #e3f2fd;
+  border: 2px solid #1a73e8;
+}
+
+.server {
+  background: #fff3e0;
+  border: 2px solid #fb8c00;
+}
+
+.arrow {
+  font-weight: bold;
+  font-size: 18px;
+  color: #37474f;
+}
+
+.schema-steps ol {
+  margin-left: 20px;
+}
+
+.schema-steps li {
+  margin-bottom: 6px;
+}
+</style>
+
+<!-- ================= STYLE GLOBAL ================= -->
+<style>
+.tp-card {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  font-family: 'Segoe UI', sans-serif;
+  color: #263238;   /* gris foncé lisible (recommandé) */
+  line-height: 1.6;
+}
+.blue { background:#e8f0fe; border-left:6px solid #08011f; }
+.orange { background:#fff3e0; border-left:6px solid #fb8c00; }
+.cyan { background:#e0f7fa; border-left:6px solid #00acc1; }
+.dark { background:#263238; color:#fff; border-left:6px solid #90caf9; }
+
+.blue h2   { color: #0d47a1; }
+.orange h2 { color: #e65100; }
+.cyan h2   { color: #006064; }
+.dark h2   { color: #bbdefb; }
+
+.code-block {
+  background:#1e1e1e;
+  color:#d4d4d4;
+  padding:14px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-family:'Fira Code', monospace;
+  font-size:14px;
+}
+
+.keyword { color:#569cd6; font-weight:bold; }
+.string { color:#d69d85; }
+.number { color:#b5cea8; }
+.tag { color:#4ec9b0; }
+.attr { color:#9cdcfe; }
+
+.tip {
+  margin-top:10px;
+  padding:10px;
+  background:#ffffffaa;
+  border-left:4px solid #1a73e8;
+}
+</style>
+<section id="node-express-tp" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f9; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.1);">
+
+<p style="color:#555; margin-top:10px;">
+Dans cette partie du TP, nous allons remplacer le fichier <strong>events.json</strong>
+par une <strong>base de données MySQL</strong> afin de stocker les événements
+de manière professionnelle et persistante.
+</p>
+
+<!-- ETAPE 1 -->
+<div style="margin-top:25px; padding:15px; background:#e8f0fe;
+border-left:5px solid #1a73e8; border-radius:8px;">
+
+<h3 style="color:#0b3d91;">Étape 1 – Création de la base de données MySQL</h3>
+
+<p class="text-gray-400 mt-2">
+Nous commençons par créer une base appelée <strong>tp_events</strong>
+qui contiendra toutes les informations des événements.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>
+<span class="keyword">CREATE DATABASE</span> tp_events;
+<span class="keyword">USE</span> tp_events;
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:10px;">
+👉 Cette commande doit être exécutée dans <strong>MySQL</strong> (phpMyAdmin ou terminal).
+</p>
+</div>
+
+<!-- ETAPE 2 -->
+<div style="margin-top:25px; padding:15px; background:#fff3e0;
+border-left:5px solid #fb8c00; border-radius:8px;">
+
+<h3 style="color:#e65100;">Étape 2 – Création de la table <code>events</code></h3>
+
+<p class="text-gray-400 mt-2">
+La table <strong>events</strong> stocke les informations saisies dans le formulaire HTML.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>
+<span class="keyword">CREATE TABLE</span> events (
+  id <span class="keyword">INT AUTO_INCREMENT PRIMARY KEY</span>,
+  titre <span class="keyword">VARCHAR</span>(255),
+  date <span class="keyword">DATE</span>,
+  lieu <span class="keyword">VARCHAR</span>(255),
+  description <span class="keyword">TEXT</span>,
+  adresse <span class="keyword">VARCHAR</span>(255),
+  lat <span class="keyword">FLOAT</span>,
+  lng <span class="keyword">FLOAT</span>,
+  affiche <span class="keyword">VARCHAR</span>(255),
+  fiche <span class="keyword">VARCHAR</span>(255)
+);
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:10px;">
+👉 Chaque ligne correspond à <strong>un événement universitaire</strong>.
+</p>
+</div>
+
+<!-- ETAPE 3 -->
+<div style="margin-top:25px; padding:15px; background:#e8f5e9;
+border-left:5px solid #43a047; border-radius:8px;">
+
+<h3 style="color:#2e7d32;">Étape 3 – Connexion Node.js ↔ MySQL</h3>
+
+<p class="text-gray-400 mt-2">
+Dans <strong>server.js</strong>, on utilise le module <code>mysql2</code>
+pour communiquer avec la base de données.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>
+<span class="keyword">const</span> mysql = <span class="string">require('mysql2')</span>;
+
+<span class="keyword">const</span> db = mysql.createConnection({
+  host: <span class="string">'localhost'</span>,
+  user: <span class="string">'root'</span>,
+  password: <span class="string">''</span>,
+  database: <span class="string">'tp_events'</span>
+});
+
+db.connect(() => {
+  console.log(<span class="string">'✅ MySQL connecté'</span>);
+});
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:10px;">
+👉 Cette connexion permet à Express d’exécuter des requêtes SQL.
+</p>
+</div>
+
+<!-- ETAPE 4 -->
+<div style="margin-top:25px; padding:15px; background:#f3e5f5;
+border-left:5px solid #8e24aa; border-radius:8px;">
+
+<h3 style="color:#6a1b9a;">Étape 4 – Enregistrer un événement (POST)</h3>
+
+
+<h2 style="color:#1a73e8; border-bottom:2px solid #1a73e8; padding-bottom:6px;">
+Récupération et enregistrement d’un événement (POST /events)
+</h2>
+
+<p style="color:#555; margin-top:10px;">
+Cette route Express permet de :
+<ul style="color:#555; margin-left:20px;">
+  <li>récupérer les données du formulaire HTML</li>
+  <li>traiter les fichiers envoyés (affiche + fiche)</li>
+  <li>valider les champs obligatoires</li>
+  <li>insérer l’événement dans la base MySQL</li>
+</ul>
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+
+<pre class="code-block"><code>
+<span class="comment">// POST /events - Créer un nouvel événement</span>
+app.post(<span class="string">'/events'</span>, upload.fields([
+  { name: <span class="string">'affiche'</span>, maxCount: <span class="number">1</span> },
+  { name: <span class="string">'fiche'</span>, maxCount: <span class="number">1</span> }
+]), (req, res) => {
+
+  console.log(<span class="string">'📥 Body reçu:'</span>, req.body);
+  console.log(<span class="string">'📁 Fichiers reçus:'</span>, req.files);
+
+  <span class="keyword">const</span> { titre, date, lieu, description, adresse, lat, lng } = req.body;
+
+  <span class="comment">// Vérification des champs obligatoires</span>
+  <span class="keyword">if</span> (!titre || !date || !lieu) {
+    <span class="keyword">return</span> res.status(<span class="number">400</span>).json({
+      error: <span class="string">'Titre, date et lieu sont obligatoires'</span>
+    });
+  }
+
+  <span class="keyword">const</span> affiche = req.files?.affiche
+    ? req.files.affiche[<span class="number">0</span>].filename
+    : <span class="keyword">null</span>;
+
+  <span class="keyword">const</span> fiche = req.files?.fiche
+    ? req.files.fiche[<span class="number">0</span>].filename
+    : <span class="keyword">null</span>;
+
+  <span class="keyword">const</span> sql = <span class="string">`
+    INSERT INTO events
+    (titre, date, lieu, description, adresse, lat, lng, affiche, fiche)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `</span>;
+
+  <span class="keyword">const</span> values = [
+    titre,
+    date,
+    lieu,
+    description || <span class="string">''</span>,
+    adresse || <span class="string">''</span>,
+    lat || <span class="keyword">null</span>,
+    lng || <span class="keyword">null</span>,
+    affiche,
+    fiche
+  ];
+
+  db.query(sql, values, (err, result) => {
+    <span class="keyword">if</span> (err) {
+      console.error(<span class="string">'❌ Erreur INSERT:'</span>, err);
+      <span class="keyword">return</span> res.status(<span class="number">500</span>).json({
+        error: <span class="string">'Erreur lors de la création'</span>
+      });
+    }
+
+    res.json({
+      message: <span class="string">'✅ Événement créé avec succès'</span>,
+      id: result.insertId
+    });
+  });
+});
+</code></pre>
+</div>
+
+<p style="color:#666; margin-top:12px;">
+<strong>Remarque pédagogique :</strong>  
+Cette implémentation illustre une vraie logique <em>backend professionnelle</em> :
+validation, upload de fichiers, requêtes préparées et gestion d’erreurs.
+</p>
+
+</div>
+
+<!-- ETAPE 5 -->
+<div style="margin-top:25px; padding:15px; background:#e1f5fe;
+border-left:5px solid #039be5; border-radius:8px;">
+
+<h3 style="color:#0277bd;">Étape 5 – Lire les événements (GET)</h3>
+
+<p class="text-gray-400 mt-2">
+Au chargement de la page, les événements sont récupérés depuis MySQL
+et affichés dans la liste.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>
+app.get(<span class="string">'/events'</span>, (req, res) => {
+  db.query(<span class="string">'SELECT * FROM events'</span>,
+    (err, rows) => res.json(rows)
+  );
+});
+</code></pre>
+</div>
+</div>
+
+<!-- ETAPE 6 -->
+<div style="margin-top:25px; padding:15px; background:#ffebee;
+border-left:5px solid #e53935; border-radius:8px;">
+
+<h3 style="color:#c62828;">Étape 6 – Supprimer un événement (DELETE)</h3>
+
+<p class="text-gray-400 mt-2">
+Chaque événement possède un bouton <strong>Supprimer</strong>
+qui enlève la ligne correspondante de la base.
+</p>
+
+<div class="code-container">
+<button onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>
+app.delete(<span class="string">'/events/:id'</span>, (req, res) => {
+  db.query(
+    <span class="string">'DELETE FROM events WHERE id = ?'</span>,
+    [req.params.id],
+    () => res.json({ status: <span class="string">'deleted'</span> })
+  );
+});
+</code></pre>
+</div>
+</div>
+
+</section>
+</section>
+<!-- STYLE CODE -->
+<style>
+.code-block {
+  background:#1e1e1e;
+  color:#dcdcdc;
+  padding:15px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-size:14px;
+}
+.keyword { color:#569cd6; }
+.string { color:#ce9178; }
+.number { color:#b5cea8; }
+
+.code-container {
+  position: relative;
+}
+.code-container button {
+  position:absolute;
+  top:8px; right:8px;
+  background:#1a73e8;
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+</style>
+
+<script>
+function copyCode(btn){
+  const code = btn.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code);
+  btn.innerText = "✅ Copié";
+  setTimeout(()=>btn.innerText="📋 Copier",1500);
+}
+</script>
+
+</body>
+</html>
