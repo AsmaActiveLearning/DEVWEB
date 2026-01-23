@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TP Social Media - Microservices</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b,#111827);
+  color: #e5e7eb;
+  margin: 0;
+  padding-top: 100px;
+  padding-left: 250px;
+  box-sizing: border-box;
+}
+header {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  width: calc(100% - 250px);
+  height: 100px;
+  z-index: 100;
+  background: #000;
+  backdrop-blur: blur(8px);
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: rgba(15,23,42,0.95);
+  border-right: 1px solid #0ff;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 60;
+}
+#sidebar h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0ff;
+  margin-bottom: 12px;
+}
+#sidebar ul { list-style: none; padding: 0; }
+#sidebar ul li { margin-bottom: 8px; }
+#sidebar ul li a { color: #e5e7eb; text-decoration: none; font-size: 14px; }
+#sidebar ul li a:hover { color: #06b6d4; }
+
+section {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 12px;
+  background: rgba(15,23,42,0.85);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+h2 { color: #0ff; font-weight: bold; margin-bottom: 12px; font-size: 20px; }
+h3 { color: #facc15; margin-top: 12px; margin-bottom: 8px; font-size: medium;}
+pre { background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
+button.copy-btn { background: #0ff; color: #111827; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 8px; font-weight: bold; }
+button.copy-btn:hover { background: #06b6d4; }
+textarea { width: 100%; min-height: 100px; margin-top: 8px; padding: 10px; border-radius: 6px; border: 1px solid #0ff; background: #111827; color: #e5e7eb; }
+button.evaluate-btn { background: #facc15; color: #111827; padding: 8px 16px; border-radius: 6px; font-weight: bold; margin-top: 8px; cursor: pointer; }
+button.evaluate-btn:hover { background: #eab308; }
+
+.code-block {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.code-block .keyword { color: #569cd6; font-weight: bold; }
+.code-block .string { color: #d69d85; }
+.code-block .number { color: #b5cea8; }
+
+.tip {
+  margin-top:10px;
+  padding:10px;
+  background:#ffffffaa;
+  border-left:4px solid #1a73e8;
+}
+ p.note {
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1em;
+        padding: 15px 20px;
+        background-color: #fff3cd;
+        border-left: 6px solid #ffc107;
+        border-radius: 6px;
+        color: #1e1e1e;
+    }
+    ul.objectives li::before {
+        content: "✅";
+        margin-right: 12px;
+        font-size: 1.2em;
+    }
+
+.code-block {
+  background:#1e1e1e;
+  color:#dcdcdc;
+  padding:15px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-size:14px;
+}
+.keyword { color:#569cd6; }
+.string { color:#ce9178; }
+.number { color:#b5cea8; }
+
+.code-container {
+  position: relative;
+}
+.code-container button {
+  position:absolute;
+  top:8px; right:8px;
+  background:#1a73e8;
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+</style>
+<style>
+.code-block {
+  background:#1e1e1e;
+  color:#dcdcdc;
+  padding:16px;
+  border-radius:10px;
+  overflow-x:auto;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.keyword { color:#569cd6; }
+.string  { color:#ce9178; }
+.number  { color:#b5cea8; }
+.comment { color:#6a9955; }
+.attr    { color:#9cdcfe; }
+
+.code-container {
+  position:relative;
+  margin-top:15px;
+}
+
+.code-container button {
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:#1a73e8;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+</style>
+
+<script>
+function copyCode(button){
+  const code = button.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code);
+  alert("Code copié !");
+}
+</script>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar">
+<h3>Navigation TP Microservices</h3>
+<ul>
+<li><a href="#intro">1. Introduction</a></li>
+<li><a href="#user-service">2. Service User</a></li>
+<li><a href="#gateway">3. API Gateway</a></li>
+<li><a href="#integration">4. Intégration & Tests</a></li>
+<li><a href="#exercices">6. Exercices</a></li>
+</ul>
+<h3>Documents utiles</h3>
+  <ul>
+    <li><a href="documents/tp.pdf" download>Guide complet</a></li>
+    <li><a href="documents/tp2.pdf" download>Guide format exercices et tests</a></li>
+    <li><a href="documents/visuel.pdf" download>Architecture Microservices</a></li>
+  </ul>
+</div>
+
+<!-- Header -->
+<header class="flex justify-between items-center mb-6">
+<div>
+<h1 class="text-3xl font-extrabold text-cyan-400">TP3: Social Media avec microservices</h1>
+<p class="text-gray-400 mt-2">Microservices avec Node.js, Express et MongoDB Atlas</p>
+</div>
+<p class="text-yellow-300 italic font-futuristic text-right">
+    Publié <span class="font-bold">23/01/2026</span> par Asma BAGHDADI
+  </p>
+
+</header>
+<section id="intro" >
+    <p >
+    <h2>Introduction</h2>
+    Dans ce TP, nous allons créer un mini-réseau social basé sur l’architecture microservices. Chaque service est indépendant, scalable et communique via HTTP REST.
+    </p>
+    <div style="margin-top: 20px; padding: 15px; background: #e8f0fe; border-left: 5px solid #1a73e8; border-radius: 8px;">
+  <h2 style="color: #0b3d91;">Documentation recommandée</h2>
+  <p class="text-gray-600 mt-2">
+    Pour approfondir l’architecture microservices avec Node.js, consultez la documentation suivante :
+  </p>
+  <a href="https://gamma.app/docs/Architecture-Microservices-avec-Nodejs-7zu9i5f6oeym4k8" 
+     target="_blank" 
+     style="color: #1a73e8; font-weight: bold; text-decoration: underline;">
+    🔗 Architecture Microservices avec Node.js
+  </a>
+</div>
+</section>
+<section>
+    <h2>Objectifs Pédagogiques</h2>
+    <p style=" margin-bottom:20px;">À la fin de ce TP, vous serez capable de :</p>
+
+    <ul class="objectives">
+        <li>Comprendre l'architecture microservices vs monolithique</li>
+        <li>Concevoir et implémenter des services découplés</li>
+        <li>Gérer la communication inter-services via HTTP/REST</li>
+        <li>Implémenter une authentification JWT</li>
+        <li>Utiliser MongoDB avec Mongoose (ODM)</li>
+        <li>Créer une API Gateway pour le routage</li>
+        <li>Tester des API avec Thunder client</li>
+        <li>Comprendre les avantages et inconvénients des microservices</li>
+    </ul>
+
+    <p class="note">
+    Nous utiliserons MongoDB Atlas pour la persistance, dotenv pour les variables sensibles, et Node.js + Express pour les services.
+    </p>
+</section>
+   
+
+<aside>
+    <!-- Sidebar vide pour éviter chevauchement, peut contenir menu ou ressources -->
+</aside>
+
+<section id="user-service">
+<h2>Service User</h2>
+
+<h3>Étape 1 – Créer le projet User</h3>
+<p>Créer un dossier <code>user-service</code>, puis initialiser :</p>
+<div class="code-container" style="margin-top:20px;">
+  <button onclick="copyCode(this)">📋 Copier</button>
+  <pre class="code-block"><code>
+<span class="comment">// Création du dossier du microservice utilisateur</span>
+<span class="command">mkdir</span> user-service
+<span class="command">cd</span> user-service
+
+<span class="comment">// Initialisation du projet Node.js</span>
+<span class="command">npm</span> init -y
+
+<span class="comment">// Installation des dépendances principales</span>
+<span class="command">npm</span> install express mongoose dotenv cors
+  </code></pre>
+</div>
+
+
+<h3>Étape 2 – Fichier <code>.env</code></h3>
+<p>Définir la connexion MongoDB Atlas :</p>
+<div class="code-container">
+<button class="copy-btn" onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>MONGO_URI=mongodb+srv://username:password@cluster0.mongodb.net/userdb?retryWrites=true&w=majority
+PORT=5000</code></pre>
+</div>
+
+<h3>Étape 3 – Fichier <code>server.js</code></h3>
+<p>Connexion MongoDB et lancement Express :</p>
+<div class="code-container" style="margin-top:20px;">
+  <button onclick="copyCode(this)">📋 Copier</button>
+
+  <pre class="code-block"><code>
+<span class="comment">// Chargement des variables d’environnement (.env)</span>
+<span class="keyword">require</span>(<span class="string">'dotenv'</span>).<span class="method">config</span>();
+
+<span class="comment">// Import des dépendances</span>
+<span class="keyword">const</span> express = <span class="keyword">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> mongoose = <span class="keyword">require</span>(<span class="string">'mongoose'</span>);
+<span class="keyword">const</span> cors = <span class="keyword">require</span>(<span class="string">'cors'</span>);
+
+<span class="comment">// Initialisation de l’application Express</span>
+<span class="keyword">const</span> app = <span class="method">express</span>();
+
+<span class="comment">// Middlewares globaux</span>
+app.<span class="method">use</span>(cors());
+app.<span class="method">use</span>(express.<span class="method">json</span>());
+
+<span class="comment">// Import des routes utilisateurs</span>
+<span class="keyword">const</span> userRoutes = <span class="keyword">require</span>(<span class="string">'./users'</span>);
+app.<span class="method">use</span>(<span class="string">'/users'</span>, userRoutes);
+
+<span class="comment">// Connexion à MongoDB Atlas</span>
+mongoose.<span class="method">connect</span>(process.env.<span class="property">MONGO_URI</span>, {
+  useNewUrlParser: <span class="keyword">true</span>,
+  useUnifiedTopology: <span class="keyword">true</span>
+})
+.<span class="method">then</span>(() =&gt; 
+  console.<span class="method">log</span>(<span class="string">'✅ MongoDB User connected'</span>)
+)
+.<span class="method">catch</span>(err =&gt; 
+  console.<span class="method">log</span>(<span class="string">'❌ MongoDB User error:'</span>, err)
+);
+
+<span class="comment">// Lancement du serveur</span>
+app.<span class="method">listen</span>(process.env.<span class="property">PORT</span>, () =&gt; {
+  console.<span class="method">log</span>(
+    <span class="string">`User Service running on port ${process.env.PORT}`</span>
+  );
+});
+  </code></pre>
+</div>
+
+
+<h3>Étape 4 – Fichier <code>users.js</code></h3>
+<p>Routes CRUD pour les utilisateurs :</p>
+<div class="code-container" style="margin-top:20px;">
+  <button onclick="copyCode(this)">📋 Copier</button>
+
+  <pre class="code-block"><code>
+<span class="comment">// Import d’Express et création du routeur</span>
+<span class="keyword">const</span> express = <span class="keyword">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> router = express.<span class="method">Router</span>();
+
+<span class="comment">// Import de Mongoose</span>
+<span class="keyword">const</span> mongoose = <span class="keyword">require</span>(<span class="string">'mongoose'</span>);
+
+<span class="comment">// Définition du schéma User</span>
+<span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="method">Schema</span>({
+  name: <span class="type">String</span>,
+  email: <span class="type">String</span>
+});
+
+<span class="comment">// Création du modèle User</span>
+<span class="keyword">const</span> User = mongoose.<span class="method">model</span>(<span class="string">'User'</span>, userSchema);
+
+<span class="comment">// =========================</span>
+<span class="comment">// GET /users → récupérer tous les utilisateurs</span>
+<span class="comment">// =========================</span>
+router.<span class="method">get</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) =&gt; {
+  <span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="method">find</span>();
+  res.<span class="method">json</span>(users);
+});
+
+<span class="comment">// =========================</span>
+<span class="comment">// POST /users → créer un utilisateur</span>
+<span class="comment">// =========================</span>
+router.<span class="method">post</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) =&gt; {
+  <span class="keyword">const</span> user = <span class="keyword">new</span> User(req.<span class="property">body</span>);
+  <span class="keyword">await</span> user.<span class="method">save</span>();
+  res.<span class="method">json</span>(user);
+});
+
+<span class="comment">// =========================</span>
+<span class="comment">// DELETE /users/:id → supprimer un utilisateur</span>
+<span class="comment">// =========================</span>
+router.<span class="method">delete</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) =&gt; {
+  <span class="keyword">await</span> User.<span class="method">findByIdAndDelete</span>(req.<span class="property">params</span>.id);
+  res.<span class="method">json</span>({ status: <span class="string">'deleted'</span> });
+});
+
+<span class="comment">// Export du routeur</span>
+<span class="keyword">module</span>.exports = router;
+  </code></pre>
+</div>
+
+<p class="tip" style="color: #0f172a;">💡 Astuce ingénieur : Séparer routes et modèles simplifie le maintien et l’extension du service.</p>
+
+<h3>Importance du Gateway</h3>
+<p class=""note">Dans une architecture microservices, passer par un <strong>API Gateway</strong> est crucial :
+<ul>
+<li>Point d’entrée unique pour tous les services</li>
+<li>Gestion centralisée de l’authentification, logging et monitoring</li>
+<li>Facilite le routage et la mise à l’échelle indépendante des services</li>
+</ul>
+</p>
+</section>
+
+<section id="manipulation">
+    <h2> Étape 5 : Adapter le code avant API Gateway
+
+Variables dynamiques : .env
+
+Mongo Atlas au lieu d’un Mongo local
+
+Routes de test : /health, /users (GET + POST)
+
+Une fois testé, on pourra rediriger via Gateway avec http://gateway/users/....</h2></section>
+<section id="gateway">
+<h2>API Gateway</h2>
+<p>Créer un projet <code>gateway</code> :</p>
+<div class="code-container">
+<button class="copy-btn" onclick="copyCode(this)">📋 Copier</button>
+<pre class="code-block"><code>mkdir gateway
+cd gateway
+npm init -y
+npm install express http-proxy-middleware dotenv cors</code></pre>
+</div>
+
+<h3>server.js Gateway</h3>
+<div class="code-container" style="margin-top:20px;">
+  <button onclick="copyCode(this)">📋 Copier</button>
+
+  <pre class="code-block"><code>
+<span class="comment">// Charger les variables d'environnement</span>
+<span class="keyword">require</span>(<span class="string">'dotenv'</span>).<span class="method">config</span>();
+
+<span class="comment">// Importer Express et CORS</span>
+<span class="keyword">const</span> express = <span class="keyword">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> cors = <span class="keyword">require</span>(<span class="string">'cors'</span>);
+
+<span class="comment">// Importer le proxy HTTP middleware</span>
+<span class="keyword">const</span> { createProxyMiddleware } = <span class="keyword">require</span>(<span class="string">'http-proxy-middleware'</span>);
+
+<span class="comment">// Création de l'application Express</span>
+<span class="keyword">const</span> app = express();
+app.<span class="method">use</span>(cors());
+
+<span class="comment">// =========================</span>
+<span class="comment">// Proxy vers le service User</span>
+<span class="comment">// Toutes les requêtes /users seront redirigées vers http://localhost:5000</span>
+<span class="keyword">const</span> userProxy = createProxyMiddleware({ target: <span class="string">'http://localhost:5000'</span>, changeOrigin: true });
+app.<span class="method">use</span>(<span class="string">'/users'</span>, userProxy);
+
+<span class="comment">// Proxy vers le service Post</span>
+<span class="comment">// Toutes les requêtes /posts seront redirigées vers http://localhost:6000</span>
+<span class="keyword">const</span> postProxy = createProxyMiddleware({ target: <span class="string">'http://localhost:6000'</span>, changeOrigin: true });
+app.<span class="method">use</span>(<span class="string">'/posts'</span>, postProxy);
+
+<span class="comment">// Lancer le Gateway</span>
+app.<span class="method">listen</span>(process.env.<span class="property">PORT</span>, () =&gt; 
+  console.log(<span class="string">`Gateway running on port ${process.env.PORT}`</span>)
+);
+  </code></pre>
+</div>
+
+<p class="tip" style="color: #111827;">💡 Astuce ingénieur : Le proxy résout les problèmes de CORS et simplifie le front-end qui n'appelle qu'une seule URL.</p>
+
+<h3>Problèmes rencontrés et corrections</h3>
+<ul>
+<li>❌ <strong>Erreur CORS :</strong> solution = ajouter <code>cors()</code> dans tous les services</li>
+<li>❌ <strong>Ports en conflit :</strong> solution = vérifier <code>PORT</code> dans <code>.env</code></li>
+<li>❌ <strong>MongoDB Atlas connexion :</strong> solution = whitelist IP et vérifier URI</li>
+</ul>
+</section>
+
+<section id="integration">
+<h2>Intégration & Tests</h2>
+<p>Le front-end peut maintenant appeler le Gateway pour obtenir :</p>
+<ul>
+<li><code>GET /users</code> → liste des utilisateurs</li>
+<li><code>POST /users</code> → créer utilisateur</li>
+<li><code>GET /posts</code> → liste des publications</li>
+<li><code>POST /posts</code> → créer publication</li>
+</ul>
+
+<p>Exemple fetch côté front :</p>
+<div class="code-container" style="margin-top:20px;">
+  <button onclick="copyCode(this)">📋 Copier</button>
+
+  <pre class="code-block"><code>
+<span class="keyword">const</span> BASE_URL = <span class="string">'http://localhost:7000'</span>;
+
+<span class="comment">// Récupérer tous les utilisateurs</span>
+<span class="keyword">async</span> <span class="function">fetchUsers</span>() {
+  <span class="keyword">const</span> res = await <span class="function">fetch</span>(`${BASE_URL}/users`);
+  <span class="keyword">const</span> users = await res.<span class="method">json</span>();
+  <span class="function">console.log</span>(users);
+}
+
+<span class="comment">// Créer un nouvel utilisateur</span>
+<span class="keyword">async</span> <span class="function">createUser</span>(name, email) {
+  await <span class="function">fetch</span>(`${BASE_URL}/users`, {
+    method: <span class="string">'POST'</span>,
+    headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+    body: <span class="function">JSON.stringify</span>({ name, email })
+  });
+}
+  </code></pre>
+</div>
+
+</section>
+
+<section id="exercices">
+<h2>Exercices</h2>
+<ul>
+<li>Créer un front-end pour afficher utilisateurs et posts via Gateway</li>
+<li>Ajouter authentification JWT dans Gateway</li>
+<li>Ajouter microservice Commentaires lié aux Posts</li>
+<li>Mettre en place des tests unitaires pour chaque service</li>
+</ul>
+</section>
+
+</body>
+</html>
